@@ -1,0 +1,79 @@
+package com.zyprex.flauncher.AppList
+
+import android.content.Context
+import android.graphics.Color
+import android.graphics.Rect
+import android.os.Build
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.TextView
+import androidx.core.view.setPadding
+import androidx.recyclerview.widget.RecyclerView
+import com.zyprex.flauncher.AppArchive
+import com.zyprex.flauncher.decentTextView
+import com.zyprex.flauncher.getAppIcon
+import com.zyprex.flauncher.launchApp
+
+class AppListAdapter(val apps: MutableList<AppArchive>):
+    RecyclerView.Adapter<AppListAdapter.ViewHolder>() {
+
+    companion object {
+        const val ITEM_IMG_ID = 0
+        const val ITEM_TXT_ID = 1
+    }
+
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {}
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layout = LinearLayout(parent.context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setBackgroundColor(Color.parseColor("#40000000"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                bottomMargin = 5
+            }
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(10)
+        }
+        val iconSize = (50 * parent.context.resources.displayMetrics.density).toInt()
+        val iv = ImageView(parent.context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                iconSize,
+                0.2f,
+            )
+        }
+        iv.id = ITEM_IMG_ID
+        layout.addView(iv)
+        val tv = decentTextView(parent.context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0.8f,
+            )
+        }
+        tv.id = ITEM_TXT_ID
+        layout.addView(tv)
+        return ViewHolder(layout)
+    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
+        val iv = holder.itemView.findViewById(ITEM_IMG_ID) as ImageView
+        val tv = holder.itemView.findViewById(ITEM_TXT_ID) as TextView
+        val drawable = getAppIcon(context, apps[position].pkgName)
+
+        iv.setImageDrawable(drawable)
+        tv.text = apps[position].label
+        holder.itemView.setOnClickListener {
+            launchApp(context, apps[position].pkgName)
+        }
+    }
+    override fun getItemCount(): Int = apps.size
+
+}
