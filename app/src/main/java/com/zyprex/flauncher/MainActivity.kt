@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.AppList.AppListFragment
@@ -147,4 +149,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    val reqPermissionLauncher =
+        registerForActivityResult(RequestPermission()) {
+            isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "You granted permission, Try again!",
+                    Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "You denied permission.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
 }

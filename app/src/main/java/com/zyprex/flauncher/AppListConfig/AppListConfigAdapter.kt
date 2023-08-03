@@ -2,10 +2,12 @@ package com.zyprex.flauncher.AppListConfig
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -75,6 +77,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     private fun enlargeFirstChar(text : String): SpannableString {
         val ss = SpannableString(text).apply {
             //setSpan(RelativeSizeSpan(1.5f), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            setSpan(StyleSpan(Typeface.BOLD), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             setSpan(ForegroundColorSpan(charToColor(text[0])), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         }
         return ss
