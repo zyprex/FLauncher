@@ -7,6 +7,7 @@ import com.zyprex.flauncher.launchApp
 import com.zyprex.flauncher.launchAppDetail
 import com.zyprex.flauncher.openWebPage
 import com.zyprex.flauncher.dialPhoneNum
+import com.zyprex.flauncher.expandStatusBar
 import com.zyprex.flauncher.openSystemSettings
 import com.zyprex.flauncher.readFile
 import com.zyprex.flauncher.searchWeb
@@ -72,6 +73,11 @@ class PanelVerdict(val context: Context) {
             "camera"  -> {
                 if (param == "torch") {
                     toggleTorch(context)
+                }
+            }
+            "statusbar" -> {
+                if (param == "expand") {
+                    expandStatusBar(context)
                 }
             }
         }

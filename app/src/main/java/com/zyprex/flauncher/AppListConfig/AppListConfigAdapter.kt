@@ -6,7 +6,6 @@ import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +56,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
             launchApp(context, apps[position].pkgName)
         }
         tv.setOnLongClickListener {
-            showMenu(context, tv, apps[position])
+            showAppListConfigMenu(context, tv, apps[position])
             true
         }
         if (position % 2 != 0) {
@@ -83,13 +82,13 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
         return ss
     }
 
-    private fun showMenu(context: Context, view: View, app: AppArchive) {
+    private fun showAppListConfigMenu(context: Context, view: View, app: AppArchive) {
         PopupMenu(context, view).apply {
             menu.apply {
-                add(0, 0, 0, "copy package name")
-                add(0, 1, 1, "add  to favor app")
-                add(0, 2, 2, "remove from favor app")
-                add(0, 3, 3, "app info")
+                add(0, 0, 0, "Copy Package Name")
+                add(0, 1, 1, "Add to AppList")
+                add(0, 2, 2, "Remove from AppList")
+                add(0, 3, 3, "App Info")
             }
             setOnMenuItemClickListener {
                 when(it.itemId) {

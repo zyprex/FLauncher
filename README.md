@@ -1,5 +1,17 @@
 # FLauncher
 
+Features:
+- Launch almost everything use swipes.
+- A decent App List.
+- Pure text configuration.
+- Support app shortcuts.
+- Simple but efficient.
+- Work on Android 5.0 above.
+
+# Prompt Bar
+
+Prompt bar is under screen bottom.
+
 Switch between any interface by click or long press prompt bar.
 
 Tap: `->`
@@ -63,6 +75,7 @@ url#{ACTION_CODE}#{URL}
 query#{ACTION_CODE}#{URL_%s}
 sys#{ACTION_CODE}#{settings_alias}
 camera#{ACTION_CODE}#torch
+statusbar#{ACTION_CODE}#expand
 ```
 
 ## Open Apps
@@ -98,15 +111,19 @@ settings alias |  intent
 "quicklaunch" -> Settings.ACTION_QUICK_LAUNCH_SETTINGS
 ```
 
-## Open Flash
+## Special Item Configure Samples
 
-Example: `camera#555#torch`.
+Example for toggle camera's flash: `camera#555#torch`.
+
+Example for expand status bar: `statusbar#555#expand`
 
 # Use App List
 
 Sort by long press and drag, delete by swipe left or right.
 
+Click app icon to launch app detail.
+On Android 7.1 or above will list available shortcuts.
+
 # App List Configuration
 
 Long press and you can see the menu.
-

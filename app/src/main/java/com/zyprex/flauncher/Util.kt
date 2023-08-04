@@ -41,6 +41,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.lang.reflect.Method
 import java.net.URLEncoder
 
 
@@ -230,7 +231,7 @@ fun openSystemSettings(context: Context, which: String) {
 
 var torchState = false
 var camera : Camera? = null
-
+@Suppress("deprecation")
 fun toggleTorch(context: Context) {
     if (Build.VERSION.SDK_INT < 23) {
         val pm = context.packageManager
@@ -268,6 +269,26 @@ fun toggleTorch(context: Context) {
             e.printStackTrace()
         }
     }
+}
+
+fun expandStatusBar(context: Context) {
+    val statusBarService = context.getSystemService("statusbar")
+    if (statusBarService == null) return
+    try {
+        val statusBarManager = Class.forName("android.app.StatusBarManager")
+        var expand: Method? = null
+        if (Build.VERSION.SDK_INT <= 16) {
+            expand = statusBarManager.getMethod("expand")
+        }  else {
+            expand = statusBarManager.getMethod("expandNotificationsPanel")
+//            expand = statusBarManager.getMethod("expandSettingsPanel")
+        }
+        expand.isAccessible = true
+        expand.invoke(statusBarService)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
 }
 
 /*
