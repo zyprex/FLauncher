@@ -1,11 +1,12 @@
 # FLauncher
 
 Features:
-- Launch almost everything use swipes.
-- A decent App List.
+- Launch apps use tap, press, swipe and fling actions.
+- Launch apps without looking at the screen.
+- A decent app list.
 - Pure text configuration.
-- Support app shortcuts.
-- Simple but efficient.
+- Support app shortcuts (Android Version >= 7.1).
+- Simple but efficient enough.
 - Work on Android 5.0 above.
 
 # Prompt Bar
@@ -127,3 +128,16 @@ On Android 7.1 or above will list available shortcuts.
 # App List Configuration
 
 Long press and you can see the menu.
+
+# Thanks
+
+The ideas I build this app are heavily inspired by those launchers:
+
+- [kiss launcher](https://github.com/Neamar/KISS): Search focused app launcher.
+- [Pie launcher](https://github.com/markusfisch/PieLauncher): Launcher with a dynamic pie menu.
+- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): One-hand optimized launcher.
+
+And many other's work lifted me up, help me out:
+
+- [shortcuts](https://github.com/nongdenchet/Shortcuts): Sample app tutorial for querying app shortcuts.
+

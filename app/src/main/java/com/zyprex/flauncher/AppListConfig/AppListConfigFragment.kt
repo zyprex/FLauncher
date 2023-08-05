@@ -22,10 +22,11 @@ class AppListConfigFragment : Fragment() {
     ): View? {
         displayPrompt("AppListConfig")
         activity?.let { activity ->
+            val screenWidth = activity.resources.displayMetrics.widthPixels
             val appIndex = AppIndex(activity as MainActivity)
             val rv = RecyclerView(activity)
             rv.layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                screenWidth + 1,
                 ViewGroup.LayoutParams.MATCH_PARENT,
             )
             rv.layoutManager = GridLayoutManager(activity, 2)

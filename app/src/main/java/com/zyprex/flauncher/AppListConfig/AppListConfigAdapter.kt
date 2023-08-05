@@ -48,7 +48,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
         val appName = apps[position].label
         if (position == 0 ||
              position > 0 && apps[position-1].label[0] != appName[0]) {
-            tv.text = enlargeFirstChar(appName)
+            tv.text = emphasisFirstChar(appName)
         } else {
             tv.text = appName
         }
@@ -59,21 +59,10 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
             showAppListConfigMenu(context, tv, apps[position])
             true
         }
-        if (position % 2 != 0) {
-            tv.layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply {
-                topMargin = 0
-                bottomMargin = 1
-                leftMargin = 0
-                rightMargin = 0
-            }
-        }
     }
     override fun getItemCount(): Int = apps.size
 
-    private fun enlargeFirstChar(text : String): SpannableString {
+    private fun emphasisFirstChar(text : String): SpannableString {
         val ss = SpannableString(text).apply {
             //setSpan(RelativeSizeSpan(1.5f), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             setSpan(StyleSpan(Typeface.BOLD), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -94,16 +83,17 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                 when(it.itemId) {
                     0 -> {
                         copyToClipboard(context, app.pkgName)
+                        Toast.makeText(context, "copied '${app.pkgName}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     1 -> {
                         AppIndex.addFav(context, app)
-                        Toast.makeText(context, "added ${app.label}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "added '${app.label}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     2 -> {
                         AppIndex.removeFav(context, app)
-                        Toast.makeText(context, "removed ${app.label}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "removed '${app.label}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     3 -> {

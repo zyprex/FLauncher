@@ -41,19 +41,7 @@ class AppIndex(val context: Context) {
         }
         archives.sortBy {
             it.label
-            //val pkgInfo = pm.getPackageInfo(it.pkgName, PackageManager.GET_META_DATA)
-            //pkgInfo.lastUpdateTime
         }
-        // deprecated!!!
-        /*
-        val applist = pm.getInstalledApplications(PackageManager.GET_META_DATA).sortedByDescending {
-            val  packageInfo = pm.getPackageInfo(it.packageName, PackageManager.GET_META_DATA)
-            packageInfo.lastUpdateTime
-        }
-        for (app in applist) {
-            sb.append("${app.packageName}#${app.loadLabel(pm)}\n")
-        }
-        */
     }
 
     private fun syncFav() {
