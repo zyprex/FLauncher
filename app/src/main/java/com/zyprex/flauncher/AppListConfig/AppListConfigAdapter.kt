@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.AppArchive
 import com.zyprex.flauncher.AppIndex
+import com.zyprex.flauncher.MainActivity
 import com.zyprex.flauncher.charToColor
 import com.zyprex.flauncher.copyToClipboard
 import com.zyprex.flauncher.decentTextView
@@ -34,9 +35,9 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply {
                 topMargin = 0
-                bottomMargin = 1
+                bottomMargin = MainActivity.ITEM_MARGIN
                 leftMargin = 0
-                rightMargin = 1
+                rightMargin = MainActivity.ITEM_MARGIN
             }
             setBackgroundColor(Color.parseColor("#40000000"))
         }

@@ -41,6 +41,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.lang.StringBuilder
 import java.lang.reflect.Method
 import java.net.URLEncoder
 
@@ -319,15 +320,22 @@ fun getAppIcon(context: Context, pkgName: String): Drawable {
     }
 }
 
+fun dp2px(context: Context, dp: Int): Int =
+    (dp * context.resources.displayMetrics.density).toInt()
 
 fun decentTextView(context: Context): TextView =
     TextView(context).apply {
         setLines(1)
-        height = 100
         ellipsize = TextUtils.TruncateAt.END
         textSize = 18f
         gravity = Gravity.CENTER_VERTICAL
-        setPadding(10, 8, 10, 8)
+        //setPadding(10, 8, 10, 8)
+        setPadding(
+            dp2px(context, 10),
+            dp2px(context, 9),
+            dp2px(context, 10),
+            dp2px(context, 9),
+        )
         setTextColor(Color.WHITE)
         setShadowLayer(2f, 2f, 2f, Color.BLACK)
         layoutParams = LinearLayout.LayoutParams(
@@ -335,3 +343,27 @@ fun decentTextView(context: Context): TextView =
             ViewGroup.LayoutParams.MATCH_PARENT,
         )
     }
+
+fun buildHelpString(): String {
+    val sb = StringBuilder()
+    sb.append("sys##locale\n")
+    sb.append("sys##accessibility\n")
+    sb.append("sys##deviceinfo\n")
+    sb.append("sys##display\n")
+    sb.append("sys##security\n")
+    sb.append("sys##wifi\n")
+    sb.append("sys##bluetooth\n")
+    sb.append("sys##date\n")
+    sb.append("sys##voiceinput\n")
+    sb.append("sys##ime\n")
+    sb.append("sys##usrdict\n")
+    sb.append("sys##dev\n")
+    sb.append("sys##storage\n")
+    sb.append("sys##home\n")
+    sb.append("sys##appmgr\n")
+    sb.append("sys##nfc\n")
+    sb.append("sys##quicklaunch\n")
+    sb.append("camera##torch\n")
+    sb.append("statusbar##expand\n")
+    return sb.toString()
+}

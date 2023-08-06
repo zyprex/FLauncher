@@ -18,7 +18,9 @@ import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.AppArchive
+import com.zyprex.flauncher.MainActivity
 import com.zyprex.flauncher.decentTextView
+import com.zyprex.flauncher.dp2px
 import com.zyprex.flauncher.getAppIcon
 import com.zyprex.flauncher.launchApp
 import com.zyprex.flauncher.launchAppDetail
@@ -36,32 +38,32 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val context = parent.context
 
-        launcherApps = parent.context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
 
-        val layout = LinearLayout(parent.context).apply {
+        val layout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             setBackgroundColor(Color.parseColor("#40000000"))
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply {
-                bottomMargin = 5
+                bottomMargin = MainActivity.ITEM_MARGIN
             }
             gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(10)
+            setPadding(dp2px(context, 10))
         }
-        val iconSize = (50 * parent.context.resources.displayMetrics.density).toInt()
-        val iv = ImageView(parent.context).apply {
+        val iv = ImageView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 0,
-                iconSize,
+                dp2px(parent.context, MainActivity.ICON_SIZE),
                 0.2f,
             )
         }
         iv.id = ITEM_IMG_ID
         layout.addView(iv)
-        val tv = decentTextView(parent.context).apply {
+        val tv = decentTextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.MATCH_PARENT,

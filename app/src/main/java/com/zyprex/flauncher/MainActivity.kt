@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         const val APPLIST_ID = 2
         const val PANEL_CONF_ID = 3
         const val APPLIST_CONF_ID = 4
+
+        const val ITEM_MARGIN = 5
+        const val ICON_SIZE = 50
     }
 
     private val filter = IntentFilter()
@@ -79,11 +82,10 @@ class MainActivity : AppCompatActivity() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             )
-            setPadding(10)
             gravity = Gravity.CENTER
             textSize = 20f
             setTextColor(Color.WHITE)
-            setShadowLayer(10f, 0f, 0f, Color.BLACK)
+            setShadowLayer(8f, 0f, 0f, Color.BLACK)
         }
         prompt.setOnClickListener {
             when (prompt.text){

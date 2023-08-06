@@ -26,7 +26,7 @@ class AppListConfigFragment : Fragment() {
             val appIndex = AppIndex(activity as MainActivity)
             val rv = RecyclerView(activity)
             rv.layoutParams = LinearLayout.LayoutParams(
-                screenWidth + 1,
+                screenWidth + MainActivity.ITEM_MARGIN,
                 ViewGroup.LayoutParams.MATCH_PARENT,
             )
             rv.layoutManager = GridLayoutManager(activity, 2)

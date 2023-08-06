@@ -1,7 +1,10 @@
 package com.zyprex.flauncher.PanelConfig
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +13,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.AppIndex
 import com.zyprex.flauncher.MainActivity
+import com.zyprex.flauncher.buildHelpString
+import com.zyprex.flauncher.decentTextView
 
 class PanelConfigFragment: Fragment() {
     override fun onCreateView(
@@ -18,20 +23,42 @@ class PanelConfigFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         displayPrompt("PanelConfig")
-        val editor = EditText(activity).apply {
+        if (activity == null) return null
+        val context = activity as Context
+        val layout = LinearLayout(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
             )
+            orientation = LinearLayout.VERTICAL
+        }
+        val editor = EditText(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+            )
+            setBackgroundColor(Color.parseColor("#90000000"))
+            inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             isSingleLine = false
         }
-
-        editor.setBackgroundColor(Color.parseColor("#90000000"))
-        if (activity!= null) {
-            editor.setText(AppIndex.getPanelConfig(activity as MainActivity))
-        }
+        editor.setText(AppIndex.getPanelConfig(activity as MainActivity))
         editor.id = MainActivity.PANEL_CONF_ID
-        return editor
+        layout.addView(editor)
+        val tv = decentTextView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+            )
+            gravity = Gravity.NO_GRAVITY
+            setLines(99)
+            setTextIsSelectable(true)
+            text = buildHelpString()
+
+        }
+        layout.addView(tv)
+        return layout
     }
 
     override fun onDestroyView() {
