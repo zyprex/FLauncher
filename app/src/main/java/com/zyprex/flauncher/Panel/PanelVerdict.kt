@@ -2,19 +2,11 @@ package com.zyprex.flauncher.Panel
 
 import android.content.Context
 import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.callPhoneNum
+import com.zyprex.flauncher.Starter
 import com.zyprex.flauncher.launchApp
 import com.zyprex.flauncher.launchAppDetail
-import com.zyprex.flauncher.openWebPage
-import com.zyprex.flauncher.dialPhoneNum
-import com.zyprex.flauncher.expandStatusBar
-import com.zyprex.flauncher.openSystemSettings
 import com.zyprex.flauncher.readFile
-import com.zyprex.flauncher.searchWeb
-import com.zyprex.flauncher.sendMail
-import com.zyprex.flauncher.sendSMS
-import com.zyprex.flauncher.showMap
-import com.zyprex.flauncher.toggleTorch
+
 
 class PanelVerdict(val context: Context) {
 
@@ -42,6 +34,7 @@ class PanelVerdict(val context: Context) {
     }
 
     private var cfg: String = readFile(context, AppIndex.panelFileName)
+    private val starter = Starter(context)
 
     fun actionStart(actionCode: String): Boolean {
         //Log.d("PanelVerdict", actionCode)
@@ -62,22 +55,20 @@ class PanelVerdict(val context: Context) {
         when(type) {
             "app" -> launchApp(context, param)
             "appinfo" -> launchAppDetail(context, param)
-            "dial" -> dialPhoneNum(context, param)
-            "call" -> callPhoneNum(context, param)
-            "sms" -> sendSMS(context, param)
-            "mail" -> sendMail(context, param)
-            "geo" -> showMap(context, param)
-            "url" -> openWebPage(context, param)
-            "query" -> searchWeb(context, param)
-            "sys" -> openSystemSettings(context, param)
-            "camera"  -> {
-                if (param == "torch") {
-                    toggleTorch(context)
-                }
-            }
-            "statusbar" -> {
-                if (param == "expand") {
-                    expandStatusBar(context)
+            "dial" -> starter.dialPhoneNum(param)
+            "call" -> starter.callPhoneNum(param)
+            "sms" -> starter.sendSMS(param)
+            "mail" -> starter.sendMail(param)
+            "geo" -> starter.showMap(param)
+            "url" -> starter.openWebPage(param)
+            "query" -> starter.searchWeb(param)
+            "sys" -> starter.openSystemSettings(param)
+            "cmd"  -> {
+                when (param) {
+                    "torch" -> starter.toggleTorch()
+                    "expand_statusbar" -> starter.expandStatusBar()
+                    "wallpaper" -> starter.setWallpaper()
+                    "recents" -> starter.recentActivities()
                 }
             }
         }

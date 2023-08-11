@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.AppIndex
+import com.zyprex.flauncher.DocStr
 import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.buildHelpString
 import com.zyprex.flauncher.decentTextView
 
 class PanelConfigFragment: Fragment() {
@@ -47,15 +49,16 @@ class PanelConfigFragment: Fragment() {
         layout.addView(editor)
         val tv = decentTextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 0,
                 1f
             )
+            setPadding(0, 0, 0, 0)
             gravity = Gravity.NO_GRAVITY
-            setLines(99)
             setTextIsSelectable(true)
-            text = buildHelpString()
-
+            val helpstr = DocStr.get()
+            setLines(helpstr.count { char -> char == '\n' } + 1)
+            text = helpstr
         }
         layout.addView(tv)
         return layout

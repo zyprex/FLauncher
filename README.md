@@ -62,22 +62,8 @@ and so on.
 
 # Panel Configure Specification
 
-**NOTICE**: correct configured line must end with `\n`!
-
-```
-app#{ACTION_CODE}#{AppPackageName}
-appinfo#{ACTION_CODE}#{AppPackageName}
-dial#{ACTION_CODE}#{PhoneNumber}
-call#{ACTION_CODE}#{PhoneNumber}
-sms#{ACTION_CODE}#{PhoneNumer}
-mail#{ACTION_CODE}#{Address}
-geo#{ACTION_CODE}#{Lat,Lng}
-url#{ACTION_CODE}#{URL}
-query#{ACTION_CODE}#{URL_%s}
-sys#{ACTION_CODE}#{settings_alias}
-camera#{ACTION_CODE}#torch
-statusbar#{ACTION_CODE}#expand
-```
+1. This app's configurations are self documented
+2. Correct configured line must end with `\n`.
 
 ## Open Apps
 
@@ -89,36 +75,8 @@ Tips: you can click prompt bar to run app instantly.
 
 **WARN**: Call can direct call phone number while dial not.
 
-## Settings Alias List
 
-```
-settings alias |  intent
-"locale" -> Settings.ACTION_APP_LOCALE_SETTINGS
-"accessibility" -> Settings.ACTION_ACCESSIBILITY_SETTINGS
-"deviceinfo" -> Settings.ACTION_DEVICE_INFO_SETTINGS
-"display" -> Settings.ACTION_DISPLAY_SETTINGS
-"security" -> Settings.ACTION_SECURITY_SETTINGS
-"wifi" -> Settings.ACTION_WIFI_SETTINGS
-"bluetooth" -> Settings.ACTION_BLUETOOTH_SETTINGS
-"date" -> Settings.ACTION_DATE_SETTINGS
-"voiceinput" -> Settings.ACTION_VOICE_INPUT_SETTINGS
-"ime" -> Settings.ACTION_INPUT_METHOD_SETTINGS
-"usrdict" -> Settings.ACTION_USER_DICTIONARY_SETTINGS
-"dev" -> Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS
-"storage" -> Settings.ACTION_INTERNAL_STORAGE_SETTINGS
-"home" -> Settings.ACTION_HOME_SETTINGS
-"appmgr" -> Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS
-"nfc" -> Settings.ACTION_NFC_SETTINGS
-"quicklaunch" -> Settings.ACTION_QUICK_LAUNCH_SETTINGS
-```
-
-## Special Item Configure Samples
-
-Example for toggle camera's flash: `camera#555#torch`.
-
-Example for expand status bar: `statusbar#555#expand`
-
-# Use App List
+# App List
 
 Sort by long press and drag, delete by swipe left or right.
 
