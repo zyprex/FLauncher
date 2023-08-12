@@ -1,4 +1,4 @@
-package com.zyprex.flauncher
+package com.zyprex.flauncher.UTIL
 
 import java.lang.StringBuilder
 

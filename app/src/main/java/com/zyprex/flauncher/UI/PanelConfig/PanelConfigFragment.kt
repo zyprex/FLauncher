@@ -1,4 +1,4 @@
-package com.zyprex.flauncher.PanelConfig
+package com.zyprex.flauncher.UI.PanelConfig
 
 import android.content.Context
 import android.graphics.Color
@@ -10,13 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.view.marginBottom
-import androidx.core.view.marginLeft
 import androidx.fragment.app.Fragment
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.DocStr
-import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.decentTextView
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.UTIL.DocStr
+import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UTIL.decentTextView
 
 class PanelConfigFragment: Fragment() {
     override fun onCreateView(

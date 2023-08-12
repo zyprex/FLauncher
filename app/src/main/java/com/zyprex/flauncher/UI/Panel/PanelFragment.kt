@@ -1,15 +1,12 @@
-package com.zyprex.flauncher.Panel
+package com.zyprex.flauncher.UI.Panel
 
-import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.appendLineToFile
+import com.zyprex.flauncher.UI.MainActivity
 
 
 class PanelFragment : Fragment() {

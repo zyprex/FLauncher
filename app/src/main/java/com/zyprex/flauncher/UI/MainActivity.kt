@@ -1,4 +1,4 @@
-package com.zyprex.flauncher
+package com.zyprex.flauncher.UI
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,14 +14,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import com.zyprex.flauncher.AppList.AppListFragment
-import com.zyprex.flauncher.AppListConfig.AppListConfigFragment
-import com.zyprex.flauncher.Panel.PanelFragment
-import com.zyprex.flauncher.Panel.PanelView
-import com.zyprex.flauncher.PanelConfig.PanelConfigFragment
-import kotlin.coroutines.coroutineContext
+import com.zyprex.flauncher.UI.AppList.AppListFragment
+import com.zyprex.flauncher.UI.AppListConfig.AppListConfigFragment
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.UI.Panel.PanelFragment
+import com.zyprex.flauncher.UI.Panel.PanelView
+import com.zyprex.flauncher.UI.PanelConfig.PanelConfigFragment
+import com.zyprex.flauncher.UTIL.decentTextView
 
 class MainActivity : AppCompatActivity() {
 

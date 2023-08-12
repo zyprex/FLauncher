@@ -1,9 +1,6 @@
-package com.zyprex.flauncher
+package com.zyprex.flauncher.UTIL
 
 import android.Manifest
-import android.app.ActivityManager
-import android.app.usage.UsageStats
-import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,21 +12,13 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.HorizontalScrollView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.ScrollView
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.zyprex.flauncher.UI.MainActivity
 import java.lang.reflect.Method
 import java.net.URLEncoder
-import java.text.SimpleDateFormat
 import java.util.Date
 
 class Starter(val context: Context) {
@@ -198,77 +187,5 @@ class Starter(val context: Context) {
             putExtra(Intent.EXTRA_TITLE, "set wallpaper")
         }
         safeStartActiviy(context, intent)
-    }
-
-    fun recentActivities() {
-        val manager =
-            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val now = Date().time
-        val halfday = 6*60*60*1000
-        val usageStats = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - halfday, now)
-        if (usageStats.isNullOrEmpty()) {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-            return
-        }
-        val usages = usageStats
-            .filter { info ->
-                if (info.packageName.startsWith("com.android.systemui") or
-                        info.packageName.startsWith("com.zyprex.flauncher"))
-                    false else true }
-            .sortedByDescending { info -> info.lastTimeStamp }
-        for (app in usages) {
-            Log.d("Starter", "${app.packageName} ${timeFmt(app.lastTimeStamp)}")
-        }
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
-            val bottomSheetDialog = BottomSheetDialog(context)
-            bottomSheetDialog.apply {
-                val wrapper = HorizontalScrollView(context).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                    )
-                }
-                val layout = LinearLayout(context).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                    //orientation = LinearLayout.HORIZONTAL
-                }
-                for (app in usages) {
-                    layout.addView(ImageView(context).apply {
-                        layoutParams = LinearLayout.LayoutParams(
-                            dp2px(context, MainActivity.ICON_SIZE),
-                            dp2px(context, MainActivity.ICON_SIZE),
-                        ).apply {
-                            leftMargin = dp2px(context, 5)
-                            rightMargin = dp2px(context, 5)
-                            topMargin = dp2px(context, 10)
-                            bottomMargin = dp2px(context, 15)
-                        }
-                        setOnClickListener {
-                            bottomSheetDialog.dismiss()
-                            launchApp(context, app.packageName)
-                        }
-                        setImageDrawable(getAppIcon(context, app.packageName))
-                        //text = " ${app.packageName} ${timeFmt(app.lastTimeStamp)}"
-                    })
-                }
-                wrapper.addView(layout)
-                setContentView(wrapper)
-                setCancelable(true)
-                setCanceledOnTouchOutside(true)
-            }.show()
-        }
-    }
-
-    private fun timeFmt(timeStamp: Long): String {
-        //"yyyy-MM-dd HH:mm:ss"
-        return SimpleDateFormat(
-            "HH:mm:ss"
-        ).format(Date(timeStamp))
     }
 }

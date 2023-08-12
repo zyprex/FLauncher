@@ -1,4 +1,4 @@
-package com.zyprex.flauncher.AppListConfig
+package com.zyprex.flauncher.UI.AppListConfig
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.MainActivity
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.UI.MainActivity
 
 class AppListConfigFragment : Fragment() {
 

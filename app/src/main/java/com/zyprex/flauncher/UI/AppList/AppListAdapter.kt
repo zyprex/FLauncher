@@ -1,13 +1,11 @@
-package com.zyprex.flauncher.AppList
+package com.zyprex.flauncher.UI.AppList
 
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Build
 import android.os.Process
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +15,13 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
-import com.zyprex.flauncher.AppArchive
-import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.decentTextView
-import com.zyprex.flauncher.dp2px
-import com.zyprex.flauncher.getAppIcon
-import com.zyprex.flauncher.launchApp
-import com.zyprex.flauncher.launchAppDetail
+import com.zyprex.flauncher.DT.AppArchive
+import com.zyprex.flauncher.DT.AppInfo
+import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UTIL.dp2px
+import com.zyprex.flauncher.UTIL.launchApp
+import com.zyprex.flauncher.UTIL.launchAppDetail
 
 class AppListAdapter(val apps: MutableList<AppArchive>):
     RecyclerView.Adapter<AppListAdapter.ViewHolder>() {
@@ -79,7 +77,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
         val context = holder.itemView.context
         val iv = holder.itemView.findViewById(ITEM_IMG_ID) as ImageView
         val tv = holder.itemView.findViewById(ITEM_TXT_ID) as TextView
-        val drawable = getAppIcon(context, apps[position].pkgName)
+        val drawable = AppInfo(context).getIcon(apps[position].pkgName)
 
         iv.setImageDrawable(drawable)
 

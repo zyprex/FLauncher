@@ -1,11 +1,12 @@
-package com.zyprex.flauncher.Panel
+package com.zyprex.flauncher.UI.Panel
 
 import android.content.Context
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.Starter
-import com.zyprex.flauncher.launchApp
-import com.zyprex.flauncher.launchAppDetail
-import com.zyprex.flauncher.readFile
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.DT.AppRecents
+import com.zyprex.flauncher.UTIL.Starter
+import com.zyprex.flauncher.UTIL.launchApp
+import com.zyprex.flauncher.UTIL.launchAppDetail
+import com.zyprex.flauncher.UTIL.readFile
 
 
 class PanelVerdict(val context: Context) {
@@ -68,7 +69,7 @@ class PanelVerdict(val context: Context) {
                     "torch" -> starter.toggleTorch()
                     "expand_statusbar" -> starter.expandStatusBar()
                     "wallpaper" -> starter.setWallpaper()
-                    "recents" -> starter.recentActivities()
+                    "recents" -> AppRecents(context).launcher()
                 }
             }
         }

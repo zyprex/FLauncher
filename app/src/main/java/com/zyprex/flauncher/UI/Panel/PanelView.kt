@@ -1,4 +1,4 @@
-package com.zyprex.flauncher.Panel
+package com.zyprex.flauncher.UI.Panel
 
 import android.content.Context
 import android.graphics.Canvas
@@ -11,9 +11,9 @@ import android.view.MotionEvent
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.appendLineToFile
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UTIL.appendLineToFile
 import java.util.Date
 import java.util.Timer
 import java.util.TimerTask

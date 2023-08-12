@@ -1,7 +1,9 @@
-package com.zyprex.flauncher
+package com.zyprex.flauncher.DT
 
 import android.content.Context
 import android.content.Intent
+import com.zyprex.flauncher.UTIL.readFile
+import com.zyprex.flauncher.UTIL.writeFile
 import java.lang.StringBuilder
 import java.util.Collections
 

@@ -1,27 +1,35 @@
-package com.zyprex.flauncher.AppListConfig
+package com.zyprex.flauncher.UI.AppListConfig
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.zyprex.flauncher.AppArchive
-import com.zyprex.flauncher.AppIndex
-import com.zyprex.flauncher.MainActivity
-import com.zyprex.flauncher.charToColor
-import com.zyprex.flauncher.copyToClipboard
-import com.zyprex.flauncher.decentTextView
-import com.zyprex.flauncher.launchApp
-import com.zyprex.flauncher.launchAppDetail
+import com.zyprex.flauncher.DT.AppArchive
+import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.DT.AppInfo
+import com.zyprex.flauncher.R
+import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UTIL.charToColor
+import com.zyprex.flauncher.UTIL.copyToClipboard
+import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UTIL.launchApp
+import com.zyprex.flauncher.UTIL.launchAppDetail
 
 class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     RecyclerView.Adapter<AppListConfigAdapter.ViewHolder>() {

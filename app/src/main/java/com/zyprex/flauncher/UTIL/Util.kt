@@ -1,51 +1,23 @@
-package com.zyprex.flauncher
+package com.zyprex.flauncher.UTIL
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.ShapeDrawable
-import android.hardware.Camera
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraManager
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.core.app.ComponentActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
-import androidx.core.graphics.BitmapCompat
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
-import java.lang.StringBuilder
-import java.lang.reflect.Method
-import java.net.URLEncoder
-
-
 
 /*
 *
@@ -113,10 +85,7 @@ fun copyToClipboard(context: Context, str: String) {
 
 fun safeStartActiviy(context: Context, intent: Intent) {
     if (intent.resolveActivity(context.packageManager) != null) {
-        try {
-            context.startActivity(intent)
-        } catch (e: NullPointerException) {
-        }
+        context.startActivity(intent)
     }
 }
 
@@ -155,15 +124,6 @@ fun charToColor(char: Char): Int {
     return Color.parseColor("#878787")
 }
 
-fun getAppIcon(context: Context, pkgName: String): Drawable {
-    try {
-        val pm = context.packageManager
-        val info = pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
-        return info.loadIcon(pm)
-    } catch (e: Exception) {
-        return ShapeDrawable()
-    }
-}
 
 fun dp2px(context: Context, dp: Int): Int =
     (dp * context.resources.displayMetrics.density).toInt()
