@@ -93,9 +93,10 @@ The ideas I build this app are heavily inspired by those launchers:
 
 - [kiss launcher](https://github.com/Neamar/KISS): Search focused app launcher.
 - [Pie launcher](https://github.com/markusfisch/PieLauncher): Launcher with a dynamic pie menu.
-- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): One-hand optimized launcher.
+- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): One-hand optimized launcher (Not FOSS).
 
 And many other's work lifted me up, help me out:
 
 - [shortcuts](https://github.com/nongdenchet/Shortcuts): Sample app tutorial for querying app shortcuts.
+- [lockoo](https://github.com/ChenCoin/Lockoo): lock the screen
 

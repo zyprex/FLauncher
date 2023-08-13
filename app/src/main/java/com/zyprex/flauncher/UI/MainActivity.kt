@@ -1,5 +1,6 @@
 package com.zyprex.flauncher.UI
 
+import android.bluetooth.BluetoothHeadset
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,8 @@ import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.UI.AppList.AppListFragment
 import com.zyprex.flauncher.UI.AppListConfig.AppListConfigFragment
 import com.zyprex.flauncher.DT.AppIndex
+import com.zyprex.flauncher.EXT.AppChangeBroadcastReceiver
+import com.zyprex.flauncher.EXT.SysBroadcastReceiver
 import com.zyprex.flauncher.UI.Panel.PanelFragment
 import com.zyprex.flauncher.UI.Panel.PanelView
 import com.zyprex.flauncher.UI.PanelConfig.PanelConfigFragment
@@ -38,22 +41,34 @@ class MainActivity : AppCompatActivity() {
         const val ICON_SIZE = 50
     }
 
-    private val filter = IntentFilter()
-    private val mReceiver = MyReceiver()
+    private val appChgfilter = IntentFilter().apply {
+        addAction(Intent.ACTION_PACKAGE_ADDED)
+        addAction(Intent.ACTION_PACKAGE_REMOVED)
+        addAction(Intent.ACTION_PACKAGE_REPLACED)
+        addAction(Intent.ACTION_LOCALE_CHANGED)
+        addDataScheme("package")
+    }
+    private val appChgReceiver = AppChangeBroadcastReceiver()
+
+    private val sysFilter = IntentFilter().apply {
+        addAction(Intent.ACTION_POWER_CONNECTED)
+        addAction(Intent.ACTION_POWER_DISCONNECTED)
+        addAction(Intent.ACTION_BATTERY_LOW)
+        addAction(Intent.ACTION_BATTERY_OKAY)
+        addAction(Intent.ACTION_HEADSET_PLUG)
+        addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+        addAction(Intent.ACTION_DOCK_EVENT)
+    }
+    private val sysReceiver = SysBroadcastReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
         setContentView(initView())
         replaceFragment(PanelFragment())
-        filter.apply {
-            addAction(Intent.ACTION_PACKAGE_ADDED)
-            addAction(Intent.ACTION_PACKAGE_REMOVED)
-            addAction(Intent.ACTION_PACKAGE_REPLACED)
-            addAction(Intent.ACTION_LOCALE_CHANGED)
-        }
-        filter.addDataScheme("package")
-        registerReceiver(mReceiver, filter)
+
+        registerReceiver(appChgReceiver, appChgfilter)
+        registerReceiver(sysReceiver, sysFilter)
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -128,7 +143,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(mReceiver)
+        unregisterReceiver(appChgReceiver)
+        unregisterReceiver(sysReceiver)
         super.onDestroy()
     }
 

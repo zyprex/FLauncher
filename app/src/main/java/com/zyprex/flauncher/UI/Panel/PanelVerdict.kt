@@ -1,8 +1,12 @@
 package com.zyprex.flauncher.UI.Panel
 
+import android.app.ActivityManager
 import android.content.Context
+import android.os.Build
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.DT.AppRecents
+import com.zyprex.flauncher.EXT.MyAccessibilityService
+import com.zyprex.flauncher.EXT.ScrLock
 import com.zyprex.flauncher.UTIL.Starter
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
@@ -69,8 +73,18 @@ class PanelVerdict(val context: Context) {
                     "torch" -> starter.toggleTorch()
                     "expand_statusbar" -> starter.expandStatusBar()
                     "wallpaper" -> starter.setWallpaper()
+                    "ringer_mode_norm" -> starter.setRingerMode("norm")
+                    "ringer_mode_silent" -> starter.setRingerMode("silent")
+                    "ringer_mode_vibrate" -> starter.setRingerMode("vibrate")
                     "recents" -> AppRecents(context).launcher()
                 }
+            }
+            "access" -> {
+                if (param == "lock" && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                    ScrLock(context).lock()
+                    return
+                }
+                MyAccessibilityService.useAction(param)
             }
         }
     }

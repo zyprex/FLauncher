@@ -1,19 +1,25 @@
 package com.zyprex.flauncher.UTIL
 
 import android.Manifest
+import android.app.SearchManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraManager
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.zyprex.flauncher.UI.MainActivity
@@ -187,5 +193,15 @@ class Starter(val context: Context) {
             putExtra(Intent.EXTRA_TITLE, "set wallpaper")
         }
         safeStartActiviy(context, intent)
+    }
+
+    fun setRingerMode(mode: String) {
+        val audioManager = context.getSystemService(Service.AUDIO_SERVICE) as AudioManager
+        audioManager.ringerMode = when(mode) {
+            "norm" -> AudioManager.RINGER_MODE_NORMAL
+            "silent" -> AudioManager.RINGER_MODE_SILENT
+            "vibrate" -> AudioManager.RINGER_MODE_VIBRATE
+            else -> AudioManager.RINGER_MODE_NORMAL
+        }
     }
 }

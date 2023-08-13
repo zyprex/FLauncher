@@ -62,7 +62,23 @@ object DocStr {
             param("torch", "toggle flashlight")
             param("expand_statusbar")
             param("wallpaper")
+            param("ringer_mode_[norm/silent/vibrate]"
+                , "e.g. ringer_mode_norm will set phone to ringing mode")
             param("recents")
+            type("access")
+            param("notifications")
+            param("quick_settings")
+            param("lock")
+            param("power")
+            sb.append("""
+                ACTION CODE DENOTATIONS:
+                  *  (numbered action code, e.g. your gesture sequences)
+                  USB_[IN/OUT] (connect/disconnect to power)
+                  BAT_[LOW/OK] (battery is low or full)
+                  HEADSET_[IN/OUT] (plug status for headset)
+                  BL_HEADSET_[IN/OUT] (plug status for bluetooth headset)
+                  DOCK_[CAR/DESK/LE_DESK/HE_DESK] (dock state)
+            """.trimIndent())
         }
         return sb.toString()
     }
