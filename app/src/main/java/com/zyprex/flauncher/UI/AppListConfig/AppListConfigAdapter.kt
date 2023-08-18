@@ -8,8 +8,11 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
+import android.view.GestureDetector
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -19,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.DT.AppArchive
 import com.zyprex.flauncher.DT.AppIndex
@@ -30,12 +34,14 @@ import com.zyprex.flauncher.UTIL.copyToClipboard
 import com.zyprex.flauncher.UTIL.decentTextView
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
+import kotlin.math.abs
 
 class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     RecyclerView.Adapter<AppListConfigAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = decentTextView(parent.context).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -51,6 +57,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
         }
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
         val tv = holder.itemView as TextView
@@ -69,6 +76,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
             true
         }
     }
+
     override fun getItemCount(): Int = apps.size
 
     private fun emphasisFirstChar(text : String): SpannableString {
@@ -92,17 +100,14 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                 when(it.itemId) {
                     0 -> {
                         copyToClipboard(context, app.pkgName)
-                        Toast.makeText(context, "copied '${app.pkgName}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     1 -> {
                         AppIndex.addFav(context, app)
-                        Toast.makeText(context, "added '${app.label}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     2 -> {
                         AppIndex.removeFav(context, app)
-                        Toast.makeText(context, "removed '${app.label}'", Toast.LENGTH_SHORT).show()
                         true
                     }
                     3 -> {

@@ -2,6 +2,7 @@ package com.zyprex.flauncher.DT
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import com.zyprex.flauncher.UTIL.readFile
 import com.zyprex.flauncher.UTIL.writeFile
 import java.lang.StringBuilder
@@ -12,13 +13,29 @@ class AppIndex(val context: Context) {
         const val appListFileName = "apps.txt"
         const val appFavorFileName = "apps_fav.txt"
         const val panelFileName = "panel.txt"
+
+        val archives = mutableListOf<AppArchive>()
+        val archivesFav = mutableListOf<AppArchive>()
+
         fun addFav(context: Context, app: AppArchive) {
             val str = readFile(context, appFavorFileName)
-            writeFile(context, appFavorFileName, "${app}${str.replace(app.toString(), "")}")
+            if (str.contains(app.toString())) {
+                Toast.makeText(context, "already added '${app.label}'", Toast.LENGTH_SHORT).show()
+            } else {
+                writeFile(context, appFavorFileName, "${app}${str.replace(app.toString(), "")}")
+                Toast.makeText(context, "added '${app.label}'", Toast.LENGTH_SHORT).show()
+            }
         }
         fun removeFav(context: Context, app: AppArchive) {
             var str = readFile(context, appFavorFileName)
             writeFile(context, appFavorFileName, "${str.replace(app.toString(), "")}")
+            Toast.makeText(context, "removed '${app.label}'", Toast.LENGTH_SHORT).show()
+        }
+        fun renameFav(context: Context, app: AppArchive, newName: String) {
+            var str = readFile(context, appFavorFileName)
+            var newFav = str.replace(app.toString(), "${app.pkgName}#$newName\n")
+            writeFile(context, appFavorFileName, newFav)
+            Toast.makeText(context, "rename '${app.label}' to '$newName'", Toast.LENGTH_SHORT).show()
         }
         fun getPanelConfig(context: Context): String {
             return readFile(context, panelFileName)
@@ -29,9 +46,6 @@ class AppIndex(val context: Context) {
     }
 
     private val pm = context.packageManager
-
-    private val archives = mutableListOf<AppArchive>()
-    private val archivesFav = mutableListOf<AppArchive>()
 
     private fun sync() {
         val intent = Intent(Intent.ACTION_MAIN, null)
@@ -100,4 +114,12 @@ class AppIndex(val context: Context) {
         Collections.swap(archivesFav, from, to)
     }
 
+    fun dataFavRename(app: AppArchive, newName: String) {
+        val pos = archivesFav.indexOfFirst { i -> i == app }
+        if (pos != -1) {
+            archivesFav[pos].label = newName
+        }
+    }
+
+    fun getCtx() : Context = context
 }

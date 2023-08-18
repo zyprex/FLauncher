@@ -15,6 +15,7 @@ class MyAccessibilityService: AccessibilityService() {
                 "quick_settings" -> GLOBAL_ACTION_QUICK_SETTINGS
                 "lock" -> GLOBAL_ACTION_LOCK_SCREEN
                 "power" -> GLOBAL_ACTION_POWER_DIALOG
+                "recents" -> GLOBAL_ACTION_RECENTS
                 else -> -1
             }
             if (actionCode != -1) {

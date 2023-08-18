@@ -1,5 +1,7 @@
 # FLauncher
 
+WARN: It's not a tranditional android launcher, read this doc from A to Z !
+
 Features:
 - Launch apps use tap, press, swipe and fling actions.
 - Launch apps without looking at the screen.
@@ -7,6 +9,8 @@ Features:
 - Pure text configuration.
 - Support app shortcuts (Android Version >= 7.1).
 - Simple but efficient enough.
+- Use any png image as icon (AppList interface only)
+- Rename app name (AppList interface only)
 - Work on Android 5.0 above.
 
 # Prompt Bar
@@ -85,7 +89,7 @@ On Android 7.1 or above will list available shortcuts.
 
 # App List Configuration
 
-Long press and you can see the menu.
+Long press and you can see the menu. Swipe left or right add app to AppList.
 
 # Thanks
 

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.UI.AppList.AppListFragment
@@ -39,6 +41,13 @@ class MainActivity : AppCompatActivity() {
 
         const val ITEM_MARGIN = 5
         const val ICON_SIZE = 50
+
+
+    }
+
+    var choosedImage: Uri? = null
+    val getImgFile = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        choosedImage = uri
     }
 
     private val appChgfilter = IntentFilter().apply {

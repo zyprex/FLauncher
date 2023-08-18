@@ -1,14 +1,20 @@
 package com.zyprex.flauncher.UI.AppList
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.Process
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
@@ -16,12 +22,14 @@ import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.DT.AppArchive
+import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.DT.AppInfo
 import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.decentTextView
 import com.zyprex.flauncher.UTIL.dp2px
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
+import java.io.File
 
 class AppListAdapter(val apps: MutableList<AppArchive>):
     RecyclerView.Adapter<AppListAdapter.ViewHolder>() {
@@ -82,11 +90,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
         iv.setImageDrawable(drawable)
 
         iv.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                showAppListMenu(context, it, apps[position])
-            } else {
-                launchAppDetail(context, apps[position].pkgName)
-            }
+            showAppListMenu(context, it, apps[position], position)
         }
         tv.text = apps[position].label
         holder.itemView.setOnClickListener {
@@ -95,7 +99,31 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
     }
     override fun getItemCount(): Int = apps.size
 
-    private fun showAppListMenu(context: Context, view: View, app: AppArchive) {
+    private fun showAppListMenu(context: Context, view: View, app: AppArchive, position: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            showAppListMenuWithShortcuts(context, view, app, position)
+            return
+        }
+        PopupMenu(context, view).apply {
+            menu.add(0, 0, 0, "App Info")
+            menu.addSubMenu(1, 1, 0, "Item Display").apply {
+                add(1, 101, 0, "Set Image Icon")
+                add(1, 102, 0, "Reset Icon")
+                add(1, 103, 0, "Rename App")
+            }
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    0 -> launchAppDetail(context, app.pkgName)
+                    101 -> setIconFromImg(context, app.pkgName, position)
+                    102 -> deleteImageIcon(context, app.pkgName, position)
+                    103 -> renameApp(context, app, position)
+                }
+                true
+            }
+        }.show()
+    }
+
+    private fun showAppListMenuWithShortcuts(context: Context, view: View, app: AppArchive, position: Int) {
         val shortcutQuery = LauncherApps.ShortcutQuery().apply {
             setQueryFlags(ShortcutQuery.FLAG_MATCH_MANIFEST or
                     ShortcutQuery.FLAG_MATCH_PINNED or
@@ -103,35 +131,84 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
             setPackage(app.pkgName)
         }
         val shortcuts = launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle())
-        if (shortcuts == null || shortcuts.isEmpty()) {
-            launchAppDetail(context, app.pkgName)
-            return
-        }
-        var idx = 1
+        var idx = 900
         PopupMenu(context, view).apply {
-            menu.add(1, 0, 0, "App Info")
-            for (shortcut in shortcuts) {
-                menu.add(1, idx, idx, shortcut.shortLabel)
-                idx++
+            menu.add(0, 0, 0, "App Info")
+            menu.addSubMenu(1, 1, 0, "Item Display").apply {
+                add(1, 101, 0, "Set Image Icon")
+                add(1, 102, 0, "Reset Icon")
+                add(1, 103, 0, "Rename App")
+            }
+            if (shortcuts != null && shortcuts.isNotEmpty()) {
+                for (shortcut in shortcuts) {
+                    menu.add(2, idx, 0, shortcut.shortLabel)
+                    idx++
+                }
             }
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    0 -> {
-                        launchAppDetail(context, app.pkgName)
-                    }
+                    0 -> launchAppDetail(context, app.pkgName)
+                    101 -> setIconFromImg(context, app.pkgName, position)
+                    102 -> deleteImageIcon(context, app.pkgName, position)
+                    103 -> renameApp(context, app, position)
                     else -> {
-                        val shortcut = shortcuts[it.itemId - 1]
-                        launcherApps.startShortcut(
-                            app.pkgName,
-                            shortcut.id,
-                            null,
-                            null,
-                            Process.myUserHandle()
-                        )
+                        if (shortcuts != null && shortcuts.isNotEmpty()) {
+                            val shortcut = shortcuts[it.itemId - 900]
+                            launcherApps.startShortcut(
+                                app.pkgName,
+                                shortcut.id,
+                                null,
+                                null,
+                                Process.myUserHandle()
+                            )
+                        }
                     }
                 }
                 true
             }
         }.show()
+    }
+
+    private fun setIconFromImg(context: Context, pkgName: String, position: Int) {
+        val mainActivity = context as MainActivity
+        mainActivity.getImgFile.launch("image/png")
+        val uri = mainActivity.choosedImage
+        if (uri == null) return
+        // save png
+        context.contentResolver.openInputStream(uri).use {input ->
+            context.openFileOutput("$pkgName.png", Context.MODE_PRIVATE).use { fos ->
+                val bitmap = BitmapFactory.decodeStream(input)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            }
+        }
+        notifyItemChanged(position)
+    }
+
+    private fun deleteImageIcon(context: Context, pkgName: String, position: Int) {
+        File(context.filesDir, "$pkgName.png").delete()
+        notifyItemChanged(position)
+    }
+
+    private fun renameApp(context: Context, app: AppArchive, position: Int) {
+        val appIndex = AppIndex(context)
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            val input = EditText(context).apply {
+
+            }
+            AlertDialog.Builder(context).apply {
+                setTitle("Rename App")
+                setView(input)
+                setNegativeButton("CANCEL") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                setPositiveButton("OK") { _, _ ->
+                    val newName = input.text.toString()
+                    AppIndex.renameFav(context, app, newName)
+                    appIndex.dataFavRename(app, newName)
+                    notifyItemChanged(position)
+                }
+            }.show()
+        }
     }
 }

@@ -95,7 +95,6 @@ class AppListFragment: Fragment() {
         }
 
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-
             super.clearView(recyclerView, viewHolder)
         }
     }

@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.FileNotFoundException
@@ -80,6 +81,7 @@ fun copyToClipboard(context: Context, str: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("text", str)
     clipboard.setPrimaryClip(clip)
+    Toast.makeText(context, "copied '${String}'", Toast.LENGTH_SHORT).show()
 }
 
 
