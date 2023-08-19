@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -11,6 +12,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -130,7 +132,12 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     ShortcutQuery.FLAG_MATCH_DYNAMIC)
             setPackage(app.pkgName)
         }
-        val shortcuts = launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle())
+        var shortcuts = mutableListOf<ShortcutInfo>()
+        try {
+            shortcuts = launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle()) as MutableList<ShortcutInfo>
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
         var idx = 900
         PopupMenu(context, view).apply {
             menu.add(0, 0, 0, "App Info")
@@ -139,7 +146,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                 add(1, 102, 0, "Reset Icon")
                 add(1, 103, 0, "Rename App")
             }
-            if (shortcuts != null && shortcuts.isNotEmpty()) {
+            if (shortcuts.isNotEmpty()) {
                 for (shortcut in shortcuts) {
                     menu.add(2, idx, 0, shortcut.shortLabel)
                     idx++
@@ -152,7 +159,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
                     else -> {
-                        if (shortcuts != null && shortcuts.isNotEmpty()) {
+                        if (shortcuts.isNotEmpty()) {
                             val shortcut = shortcuts[it.itemId - 900]
                             launcherApps.startShortcut(
                                 app.pkgName,
@@ -194,7 +201,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
         val handler = Handler(Looper.getMainLooper())
         handler.post {
             val input = EditText(context).apply {
-
+                setText(app.label)
             }
             AlertDialog.Builder(context).apply {
                 setTitle("Rename App")
@@ -204,7 +211,6 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                 }
                 setPositiveButton("OK") { _, _ ->
                     val newName = input.text.toString()
-                    AppIndex.renameFav(context, app, newName)
                     appIndex.dataFavRename(app, newName)
                     notifyItemChanged(position)
                 }

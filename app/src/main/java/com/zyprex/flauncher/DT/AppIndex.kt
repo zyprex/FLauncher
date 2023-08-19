@@ -17,26 +17,6 @@ class AppIndex(val context: Context) {
         val archives = mutableListOf<AppArchive>()
         val archivesFav = mutableListOf<AppArchive>()
 
-        fun addFav(context: Context, app: AppArchive) {
-            val str = readFile(context, appFavorFileName)
-            if (str.contains(app.toString())) {
-                Toast.makeText(context, "already added '${app.label}'", Toast.LENGTH_SHORT).show()
-            } else {
-                writeFile(context, appFavorFileName, "${app}${str.replace(app.toString(), "")}")
-                Toast.makeText(context, "added '${app.label}'", Toast.LENGTH_SHORT).show()
-            }
-        }
-        fun removeFav(context: Context, app: AppArchive) {
-            var str = readFile(context, appFavorFileName)
-            writeFile(context, appFavorFileName, "${str.replace(app.toString(), "")}")
-            Toast.makeText(context, "removed '${app.label}'", Toast.LENGTH_SHORT).show()
-        }
-        fun renameFav(context: Context, app: AppArchive, newName: String) {
-            var str = readFile(context, appFavorFileName)
-            var newFav = str.replace(app.toString(), "${app.pkgName}#$newName\n")
-            writeFile(context, appFavorFileName, newFav)
-            Toast.makeText(context, "rename '${app.label}' to '$newName'", Toast.LENGTH_SHORT).show()
-        }
         fun getPanelConfig(context: Context): String {
             return readFile(context, panelFileName)
         }
@@ -47,27 +27,59 @@ class AppIndex(val context: Context) {
 
     private val pm = context.packageManager
 
-    private fun sync() {
+    init {
+        archives.clear()
+        archives.addAll(initArchives())
+        archivesFav.clear()
+        archivesFav.addAll(initArchivesFav())
+    }
+
+    private fun initArchives(): MutableList<AppArchive> {
+        val archives = mutableListOf<AppArchive>()
+        val str = readFile(context, appListFileName)
+        if (str == "") {
+            return queryAppArchives()
+        }
+        for (line in str.split("\n")) {
+            if (line.contains("#")) {
+                archives.add(parseStringToAppArchive(line))
+            }
+        }
+        return archives
+    }
+
+    private fun queryAppArchives(): MutableList<AppArchive> {
+        val archives = mutableListOf<AppArchive>()
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         val activities = pm.queryIntentActivities(intent, 0)
-        archives.clear()
         for (info in activities) {
             archives.add(AppArchive(info.loadLabel(pm).toString(), info.activityInfo.packageName))
         }
         archives.sortBy {
             it.label
         }
+        // save to file
+        val sb = StringBuilder()
+        for (info in archives) {
+            sb.append("${info.pkgName}#${info.label}\n")
+        }
+        writeFile(context, appListFileName, sb.toString())
+        return archives
     }
 
-    private fun syncFav() {
+    private fun initArchivesFav(): MutableList<AppArchive> {
+        val archivesFav = mutableListOf<AppArchive>()
         val str = readFile(context, appFavorFileName)
-        archivesFav.clear()
-        for (line in str.split("\n")) {
-            if (line.contains("#")) {
-                archivesFav.add(parseStringToAppArchive(line))
+        if (str != "") {
+            for (line in str.split("\n")) {
+                if (line.contains("#")) {
+                    archivesFav.add(parseStringToAppArchive(line))
+                }
             }
+            return archivesFav
         }
+        return archivesFav
     }
 
     private fun parseStringToAppArchive(str: String): AppArchive {
@@ -75,23 +87,18 @@ class AppIndex(val context: Context) {
         return AppArchive(list[1], list[0])
     }
 
-    fun update() {
-        val sb = StringBuilder()
-        sync()
-        for (info in archives) {
-            sb.append("${info.pkgName}#${info.label}\n")
-        }
-        writeFile(context, appListFileName, sb.toString())
+    // app index methods
+    fun data(): MutableList<AppArchive> = archives
+
+    fun update()  {
+        archives.clear()
+        archives.addAll(queryAppArchives())
     }
 
-    fun data(): MutableList<AppArchive> {
-        if (archives.count() == 0) {
-            sync()
-        }
-        return archives
-    }
+    // fav app index methods
+    fun dataFav(): MutableList<AppArchive> = archivesFav
 
-    fun updateFav() {
+    fun dataFavUpdate() {
         val sb = StringBuilder()
         for (info in archivesFav) {
             sb.append("${info}")
@@ -99,25 +106,34 @@ class AppIndex(val context: Context) {
         writeFile(context, appFavorFileName, sb.toString())
     }
 
-    fun dataFav(): MutableList<AppArchive> {
-        if (archivesFav.count() == 0) {
-            syncFav()
+    fun dataFavAdd(app: AppArchive) {
+        if (archivesFav.contains(app)) {
+            Toast.makeText(context, "already added '${app.label}'", Toast.LENGTH_SHORT).show()
+        } else {
+            archivesFav.add(0, app)
+            Toast.makeText(context, "added '${app.label}'", Toast.LENGTH_SHORT).show()
+            dataFavUpdate()
         }
-        return archivesFav
     }
 
     fun dataFavRemove(pos: Int) {
+        Toast.makeText(context, "removed '${archivesFav[pos].label}'", Toast.LENGTH_SHORT).show()
         archivesFav.removeAt(pos)
+        dataFavUpdate()
     }
 
     fun dataFavSwap(from: Int, to: Int) {
         Collections.swap(archivesFav, from, to)
+        dataFavUpdate()
     }
 
     fun dataFavRename(app: AppArchive, newName: String) {
         val pos = archivesFav.indexOfFirst { i -> i == app }
-        if (pos != -1) {
+        val oldName = archivesFav[pos].label
+        if (pos != -1 && oldName != newName) {
             archivesFav[pos].label = newName
+            dataFavUpdate()
+            Toast.makeText(context, "rename '$oldName' to '$newName'", Toast.LENGTH_SHORT).show()
         }
     }
 

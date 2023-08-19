@@ -2,6 +2,7 @@ package com.zyprex.flauncher.UI.PanelConfig
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
@@ -46,6 +47,7 @@ class PanelConfigFragment: Fragment() {
         editor.id = MainActivity.PANEL_CONF_ID
         layout.addView(editor)
         val tv = decentTextView(context).apply {
+            typeface = Typeface.MONOSPACE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 0,

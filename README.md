@@ -66,7 +66,7 @@ and so on.
 
 # Panel Configure Specification
 
-1. This app's configurations are self documented
+1. This app's configurations are self documented.
 2. Correct configured line must end with `\n`.
 
 ## Open Apps
@@ -78,7 +78,6 @@ Tips: you can click prompt bar to run app instantly.
 ## About Dial or Call
 
 **WARN**: Call can direct call phone number while dial not.
-
 
 # App List
 

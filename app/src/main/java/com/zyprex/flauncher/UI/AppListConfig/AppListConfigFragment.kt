@@ -71,9 +71,8 @@ class AppListConfigFragment : Fragment() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos =viewHolder.adapterPosition
             val app = appIndex.data()[pos]
-            val context = appIndex.context
-            AppIndex.addFav(context, app)
-            //adapter.notifyItemChanged(pos)
+            appIndex.dataFavAdd(app)
+            adapter.notifyItemChanged(pos)
         }
 
 //        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
@@ -83,7 +82,7 @@ class AppListConfigFragment : Fragment() {
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
             super.clearView(recyclerView, viewHolder)
             viewHolder.itemView.alpha = 1f
-            Log.d("AppListConfigFragment", "${viewHolder.itemView.width}")
+            //Log.d("AppListConfigFragment", "${viewHolder.itemView.width}")
         }
 
         override fun onChildDraw(

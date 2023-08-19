@@ -72,7 +72,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
             launchApp(context, apps[position].pkgName)
         }
         tv.setOnLongClickListener {
-            showAppListConfigMenu(context, tv, apps[position])
+            showAppListConfigMenu(context, tv, apps[position], position)
             true
         }
     }
@@ -88,7 +88,8 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
         return ss
     }
 
-    private fun showAppListConfigMenu(context: Context, view: View, app: AppArchive) {
+    private fun showAppListConfigMenu(context: Context, view: View, app: AppArchive, pos: Int) {
+        val appIndex = AppIndex(context)
         PopupMenu(context, view).apply {
             menu.apply {
                 add(0, 0, 0, "Copy Package Name")
@@ -103,11 +104,11 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                         true
                     }
                     1 -> {
-                        AppIndex.addFav(context, app)
+                        appIndex.dataFavAdd(app)
                         true
                     }
                     2 -> {
-                        AppIndex.removeFav(context, app)
+                        appIndex.dataFavRemove(pos)
                         true
                     }
                     3 -> {

@@ -21,7 +21,7 @@ class AppListFragment: Fragment() {
     ): View? {
         displayPrompt("AppList")
         activity?.let { activity ->
-            val appIndex = AppIndex(activity as MainActivity)
+            val appIndex = AppIndex(activity)
             var dataFav = appIndex.dataFav()
             val rv = RecyclerView(activity)
             rv.layoutParams = LinearLayout.LayoutParams(
@@ -66,8 +66,9 @@ class AppListFragment: Fragment() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             appIndex.dataFavRemove(position)
-            appIndex.updateFav()
             adapter.notifyItemRemoved(position)
+            // set payload to 0 remove all drawable blinks
+            adapter.notifyItemRangeChanged(position, adapter.itemCount - position, 0)
         }
 
         override fun onMove(
@@ -85,14 +86,14 @@ class AppListFragment: Fragment() {
             return true
         }
 
-        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-            when (actionState) {
-                ItemTouchHelper.ACTION_STATE_IDLE -> {
-                    appIndex.updateFav()
-                }
-            }
-            super.onSelectedChanged(viewHolder, actionState)
-        }
+//        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+//            when (actionState) {
+//                ItemTouchHelper.ACTION_STATE_IDLE -> {
+//                    appIndex.dataFavUpdate()
+//                }
+//            }
+//            super.onSelectedChanged(viewHolder, actionState)
+//        }
 
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
             super.clearView(recyclerView, viewHolder)

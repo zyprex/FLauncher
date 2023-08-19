@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         const val ITEM_MARGIN = 5
         const val ICON_SIZE = 50
-
-
     }
 
     var choosedImage: Uri? = null

@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.EditText
 import android.widget.TextView
@@ -18,6 +19,7 @@ import java.util.Date
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.math.abs
+import kotlin.math.max
 
 class PanelView: TextView {
     constructor(context: Context): super(context)
@@ -33,6 +35,7 @@ class PanelView: TextView {
     private var y0 = 0f
     private var x1 = 0f
     private var y1 = 0f
+    private var multiTouchCount = 0
     private var pressStartTime = 0L
     private var timer: Timer? = null
 
@@ -69,14 +72,21 @@ class PanelView: TextView {
     }
 
     private fun touchAction(event: MotionEvent?): Boolean {
-        return when(event?.action) {
+        // use event.getActionMasked() detect multi-touch event
+        return when(event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 isDown = true
+                multiTouchCount = 1
                 x0 = event.x
                 y0 = event.y
                 pressStartTime = Date().time
                 if (timer != null && timer is Timer) timer?.cancel()
                 invalidate()
+                true
+            }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                //Log.d("PanelView", "${event.pointerCount}")
+                multiTouchCount = max(event.pointerCount, multiTouchCount)
                 true
             }
             MotionEvent.ACTION_MOVE -> {
@@ -89,7 +99,7 @@ class PanelView: TextView {
                 val diffX = x0 - x1
                 val diffY = y0 - y1
                 val diffTime = Date().time - pressStartTime
-                actionCode += actionCodeSewer(diffX, diffY, diffTime)
+                actionCode += actionCodeSewer(diffX, diffY, diffTime, multiTouchCount)
                 displayPrompt(actionCode)
                 timer = Timer()
                 timer?.schedule(object : TimerTask() {
@@ -111,17 +121,32 @@ class PanelView: TextView {
         }
     }
 
-    private fun actionCodeSewer(diffX: Float, diffY: Float, diffTime: Long): String {
-        return when {
-            (abs(diffX) < grid && diffY >  grid) -> "8"
-            (abs(diffX) < grid && diffY < -grid) -> "2"
-            (abs(diffY) < grid && diffX >  grid) -> "4"
-            (abs(diffY) < grid && diffX < -grid) -> "6"
-            (diffX < -grid && diffY < -grid) -> "3"
-            (diffX >  grid && diffY < -grid) -> "1"
-            (diffX < -grid && diffY >  grid) -> "9"
-            (diffX >  grid && diffY >  grid) -> "7"
-            else -> if (diffTime < 500) "5" else "0"
+    private fun actionCodeSewer(diffX: Float, diffY: Float, diffTime: Long, multiTouchCount: Int): String {
+        return if (multiTouchCount == 1) {
+            when {
+                (abs(diffX) < grid && diffY >  grid) -> "8"
+                (abs(diffX) < grid && diffY < -grid) -> "2"
+                (abs(diffY) < grid && diffX >  grid) -> "4"
+                (abs(diffY) < grid && diffX < -grid) -> "6"
+                (diffX < -grid && diffY < -grid) -> "3"
+                (diffX >  grid && diffY < -grid) -> "1"
+                (diffX < -grid && diffY >  grid) -> "9"
+                (diffX >  grid && diffY >  grid) -> "7"
+                else -> if (diffTime < 500) "5" else "0"
+            }
+        } else {
+            when(multiTouchCount) {
+                2 -> "D"
+                3 -> "T"
+                4 -> "Q"
+                5 -> "P"
+                6 -> "H"
+                7 -> "S"
+                8 -> "O"
+                9 -> "N"
+                10 -> "F"
+                else -> ""
+            }
         }
     }
 
