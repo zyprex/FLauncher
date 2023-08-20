@@ -49,6 +49,8 @@ object DocStr {
    ..#lock
    ..#power
    ..#recents
+   ..#back
+   ..#home
 
 ACTION CODE DENOTATIONS:
 

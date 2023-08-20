@@ -5,14 +5,11 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
 import android.content.pm.ShortcutInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -159,7 +156,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
                     else -> {
-                        if (shortcuts.isNotEmpty()) {
+                        if (shortcuts.isNotEmpty() && it.itemId >= 900) {
                             val shortcut = shortcuts[it.itemId - 900]
                             launcherApps.startShortcut(
                                 app.pkgName,
@@ -178,17 +175,10 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
 
     private fun setIconFromImg(context: Context, pkgName: String, position: Int) {
         val mainActivity = context as MainActivity
+        mainActivity.changedImageName = "$pkgName.png"
+        mainActivity.changedImagePos = position
         mainActivity.getImgFile.launch("image/png")
-        val uri = mainActivity.choosedImage
-        if (uri == null) return
-        // save png
-        context.contentResolver.openInputStream(uri).use {input ->
-            context.openFileOutput("$pkgName.png", Context.MODE_PRIVATE).use { fos ->
-                val bitmap = BitmapFactory.decodeStream(input)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            }
-        }
-        notifyItemChanged(position)
+        //notifyItemChanged(position)
     }
 
     private fun deleteImageIcon(context: Context, pkgName: String, position: Int) {

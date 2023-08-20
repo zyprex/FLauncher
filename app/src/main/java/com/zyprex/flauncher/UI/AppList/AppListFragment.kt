@@ -14,7 +14,7 @@ import com.zyprex.flauncher.UI.MainActivity
 
 class AppListFragment: Fragment() {
 
-    private lateinit var adapter: AppListAdapter
+    lateinit var adapter: AppListAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

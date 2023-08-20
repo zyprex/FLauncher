@@ -5,8 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -43,9 +44,19 @@ class MainActivity : AppCompatActivity() {
         const val ICON_SIZE = 50
     }
 
-    var choosedImage: Uri? = null
+    var changedImageName: String = ""
+    var changedImagePos: Int = -1
     val getImgFile = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        choosedImage = uri
+        if (uri == null) return@registerForActivityResult
+        // save png
+        contentResolver.openInputStream(uri).use {input ->
+            openFileOutput(changedImageName, Context.MODE_PRIVATE).use { fos ->
+                val bitmap = BitmapFactory.decodeStream(input)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            }
+        }
+        val appListFragment = supportFragmentManager.findFragmentById(FRAG_ID) as AppListFragment
+        appListFragment.adapter.notifyItemChanged(changedImagePos)
     }
 
     private val appChgfilter = IntentFilter().apply {

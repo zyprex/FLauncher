@@ -16,6 +16,8 @@ class MyAccessibilityService: AccessibilityService() {
                 "lock" -> GLOBAL_ACTION_LOCK_SCREEN
                 "power" -> GLOBAL_ACTION_POWER_DIALOG
                 "recents" -> GLOBAL_ACTION_RECENTS
+                "back" -> GLOBAL_ACTION_BACK
+                "home" -> GLOBAL_ACTION_HOME
                 else -> -1
             }
             if (actionCode != -1) {
