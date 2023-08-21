@@ -5,9 +5,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -114,16 +119,29 @@ fun launchAppDetail(context: Context, pkgName: String) {
 * */
 fun charToColor(char: Char): Int {
     val list = listOf<String>(
-        "#C62828", "#43A047",
-        "#FB8C00", "#80DEEA",
-        "#FFEB3B", "#1E88E5",
-        "#F48FB1", "#AB47BC",
+        "#EF5350",
+        "#26C6DA",
+        "#FFEE58",
+        "#66BB6A",
+        "#EC407A",
+        "#18897F",
+        "#FFA726",
+        "#AB47BC",
     )
     val charNum = char.code - 65
     if (charNum >= 0) {
         return Color.parseColor(list[charNum % list.count()])
     }
     return Color.parseColor("#878787")
+}
+
+fun emphasisFirstChar(text : String): SpannableString {
+    val ss = SpannableString(text).apply {
+        //setSpan(RelativeSizeSpan(1.5f), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        setSpan(StyleSpan(Typeface.BOLD), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        setSpan(ForegroundColorSpan(charToColor(text[0])), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+    }
+    return ss
 }
 
 

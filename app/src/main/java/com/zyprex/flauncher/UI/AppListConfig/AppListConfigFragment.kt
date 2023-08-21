@@ -1,13 +1,16 @@
 package com.zyprex.flauncher.UI.AppListConfig
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +18,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UTIL.dp2px
+import com.zyprex.flauncher.UTIL.emphasisFirstChar
 import kotlin.math.abs
 
 class AppListConfigFragment : Fragment() {
@@ -28,16 +33,40 @@ class AppListConfigFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         displayPrompt("AppListConfig")
-        activity?.let { activity ->
-            val screenWidth = activity.resources.displayMetrics.widthPixels
-            val appIndex = AppIndex(activity as MainActivity)
-            val rv = RecyclerView(activity)
+        activity?.let { context ->
+            val screenWidth = context.resources.displayMetrics.widthPixels
+            val appIndex = AppIndex(context as MainActivity)
+            val appListData = appIndex.data()
+
+            val layout = LinearLayout(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                orientation = LinearLayout.VERTICAL
+            }
+            val hscrollView = HorizontalScrollView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                id = MainActivity.CPOS_ID
+                setBackgroundColor(Color.parseColor("#90000000"))
+            }
+            val wrapper = LinearLayout(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            val rv = RecyclerView(context)
             rv.layoutParams = LinearLayout.LayoutParams(
                 screenWidth + MainActivity.ITEM_MARGIN,
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                0,
+                1.0f
             )
-            rv.layoutManager = GridLayoutManager(activity, 2)
-            adapter = AppListConfigAdapter(appIndex.data())
+            rv.layoutManager = GridLayoutManager(context, 2)
+            adapter = AppListConfigAdapter(appListData)
             rv.adapter = adapter
             val touchCallBack = MyItemTouchCallBack(adapter, appIndex)
             val itemTouchHelper = ItemTouchHelper(touchCallBack)
@@ -45,7 +74,38 @@ class AppListConfigFragment : Fragment() {
 
             rv.id = MainActivity.APPLIST_ID
             //rv.isLongClickable = true
-            return rv
+
+            // init Buttons in hscrollView
+            var indx = 0
+
+            for (app in appListData) {
+                if (indx == 0 || indx > 0 && appListData[indx-1].label[0] != app.label[0]) {
+                    val btn = TextView(context).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        textSize = 18f
+                        setPadding(
+                            dp2px(context, 2),
+                            0,
+                            dp2px(context, 2),
+                            0)
+                        text = emphasisFirstChar(app.label.substring(0, 1))
+                        setOnClickListener {
+                            val toPos = appListData.indexOfFirst { i -> i.label[0] == this.text[0]}
+                            rv.scrollToPosition(toPos)
+                            //Toast.makeText(context, "${this.text} ${toPos}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    wrapper.addView(btn)
+                }
+                indx++
+            }
+            hscrollView.addView(wrapper)
+            layout.addView(rv)
+            layout.addView(hscrollView)
+            return layout
         }
         return null
     }

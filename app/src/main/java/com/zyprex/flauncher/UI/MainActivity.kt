@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         const val APPLIST_ID = 2
         const val PANEL_CONF_ID = 3
         const val APPLIST_CONF_ID = 4
+        const val CPOS_ID = 5
 
         const val ITEM_MARGIN = 5
         const val ICON_SIZE = 50

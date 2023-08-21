@@ -32,6 +32,7 @@ import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.charToColor
 import com.zyprex.flauncher.UTIL.copyToClipboard
 import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UTIL.emphasisFirstChar
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
 import kotlin.math.abs
@@ -78,15 +79,6 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     }
 
     override fun getItemCount(): Int = apps.size
-
-    private fun emphasisFirstChar(text : String): SpannableString {
-        val ss = SpannableString(text).apply {
-            //setSpan(RelativeSizeSpan(1.5f), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            setSpan(StyleSpan(Typeface.BOLD), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-            setSpan(ForegroundColorSpan(charToColor(text[0])), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        }
-        return ss
-    }
 
     private fun showAppListConfigMenu(context: Context, view: View, app: AppArchive, pos: Int) {
         val appIndex = AppIndex(context)
