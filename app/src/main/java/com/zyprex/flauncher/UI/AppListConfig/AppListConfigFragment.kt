@@ -3,15 +3,12 @@ package com.zyprex.flauncher.UI.AppListConfig
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -59,21 +56,22 @@ class AppListConfigFragment : Fragment() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
             }
-            val rv = RecyclerView(context)
-            rv.layoutParams = LinearLayout.LayoutParams(
-                screenWidth + MainActivity.ITEM_MARGIN,
-                0,
-                1.0f
-            )
-            rv.layoutManager = GridLayoutManager(context, 2)
             adapter = AppListConfigAdapter(appListData)
+            val rv = RecyclerView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    screenWidth + MainActivity.ITEM_MARGIN,
+                    0,
+                    1.0f
+                )
+                layoutManager = GridLayoutManager(context, 2)
+                id = MainActivity.APPLIST_ID
+                //isLongClickable = true
+            }
             rv.adapter = adapter
+
             val touchCallBack = MyItemTouchCallBack(adapter, appIndex)
             val itemTouchHelper = ItemTouchHelper(touchCallBack)
             itemTouchHelper.attachToRecyclerView(rv)
-
-            rv.id = MainActivity.APPLIST_ID
-            //rv.isLongClickable = true
 
             // init Buttons in hscrollView
             var indx = 0

@@ -100,7 +100,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                         true
                     }
                     2 -> {
-                        appIndex.dataFavRemove(pos)
+                        appIndex.dataFavRemoveItem(app)
                         true
                     }
                     3 -> {

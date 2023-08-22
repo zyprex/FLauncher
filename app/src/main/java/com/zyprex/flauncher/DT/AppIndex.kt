@@ -122,6 +122,18 @@ class AppIndex(val context: Context) {
         dataFavUpdate()
     }
 
+    fun dataFavRemoveItem(app: AppArchive) {
+        if (archivesFav.remove(app)) {
+            Toast.makeText(context, "removed '${app.label}'", Toast.LENGTH_SHORT).show()
+            dataFavUpdate()
+        } else {
+            Toast.makeText(context, "no need remove!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
     fun dataFavSwap(from: Int, to: Int) {
         Collections.swap(archivesFav, from, to)
         dataFavUpdate()

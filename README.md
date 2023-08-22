@@ -3,19 +3,28 @@
 WARN: It's not a tranditional android launcher, read this doc from A to Z !
 
 Features:
-- Launch apps use tap, press, swipe and fling actions.
-- Launch apps without looking at the screen.
+- Do actions by fling, multiple touches or hardware connect event actions.
+- Do actions without looking at the screen.
 - A decent app list.
 - Pure text configuration.
 - Support app shortcuts (Android Version >= 7.1).
 - Simple but efficient enough.
 - Use any png image as icon (AppList interface only)
-- Rename app name (AppList interface only)
+- Rename app label (AppList interface only)
 - Work on Android 5.0 above.
 
 # Prompt Bar
 
-Prompt bar is under screen bottom.
+Prompt bar is always at screen bottom.
+
+```
++-------------+
+|             |
+|             |
++-------------+
+| prompt bar  |
++-------------+
+```
 
 Switch between any interface by click or long press prompt bar.
 
@@ -58,10 +67,10 @@ and so on.
 ## Recommand Logic Order
 
 ```
-7 Work    8 Net      9 Game
-4 finder  5 Urgent   6 Docs
+7 Work    8 Browser  9 Game
+4 Dict    5 Urgent   6 Files
 1 System  2 Note     3 Life
-          0 reserved
+          0 Reserved
 ```
 
 # Panel Configure Specification
@@ -69,26 +78,27 @@ and so on.
 1. This app's configurations are self documented.
 2. Correct configured line must end with `\n`.
 
-## Open Apps
+Explain some use cases:
 
-Example: `app#88#com.zyprex.flauncher`, launch this app by swipe up and up.
+- open android settings by swipe left bottom is `app#1#com.android.settings`
+- turn on/off flashlight by triple tap is `cmd#555#torch`
+- switch to silent mode by put two finger on screen is `cmd#D#ringer_mode_silent`
+- open music when headset connected is `app#HEADSET_IN#com.android.mediacenter`
+- call phone number 1234567 by some swipes is `call#123#1234567`
+  (call can direct call phone number speed your money while dial not.)
 
-Tips: you can click prompt bar to run app instantly.
-
-## About Dial or Call
-
-**WARN**: Call can direct call phone number while dial not.
+Any action are 1s delay to launch, but you can click prompt bar to run it instantly.
 
 # App List
 
 Sort by long press and drag, delete by swipe left or right.
 
-Click app icon to launch app detail.
-On Android 7.1 or above will list available shortcuts.
+Click app icon to show the context menu
+(on Android 7.1 or above will list available shortcuts).
 
 # App List Configuration
 
-Long press and you can see the menu. Swipe left or right add app to AppList.
+Long press show the context menu. Swipe left or right add app to AppList.
 
 # Thanks
 
