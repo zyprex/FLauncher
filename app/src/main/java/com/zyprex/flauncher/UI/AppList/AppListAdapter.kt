@@ -49,7 +49,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
 
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
-            setBackgroundColor(Color.parseColor("#40000000"))
+            //setBackgroundColor(Color.parseColor("#40000000"))
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,

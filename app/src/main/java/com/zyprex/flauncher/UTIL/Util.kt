@@ -148,23 +148,32 @@ fun emphasisFirstChar(text : String): SpannableString {
 fun dp2px(context: Context, dp: Int): Int =
     (dp * context.resources.displayMetrics.density).toInt()
 
-fun decentTextView(context: Context): TextView =
+fun shadowTextView(context: Context): TextView =
     TextView(context).apply {
         setLines(1)
         ellipsize = TextUtils.TruncateAt.END
         textSize = 18f
+        setShadowLayer(2f, 2f, 2f, Color.BLACK)
+        setTextColor(Color.WHITE)
+    }
+
+fun decentTextView(context: Context): TextView =
+    //TextView(context).apply {
+    StrokeTextView(context).apply {
+        setLines(1)
+        ellipsize = TextUtils.TruncateAt.END
+        textSize = 18f
         gravity = Gravity.CENTER_VERTICAL
-        //setPadding(10, 8, 10, 8)
         setPadding(
             dp2px(context, 10),
             dp2px(context, 9),
             dp2px(context, 10),
             dp2px(context, 9),
         )
-        setTextColor(Color.WHITE)
-        setShadowLayer(2f, 2f, 2f, Color.BLACK)
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT,
         )
+
+        setTextColor(Color.WHITE)
     }

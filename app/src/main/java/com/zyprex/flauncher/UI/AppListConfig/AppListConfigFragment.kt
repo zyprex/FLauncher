@@ -22,7 +22,7 @@ import kotlin.math.abs
 class AppListConfigFragment : Fragment() {
 
     lateinit var appIndex: AppIndex
-    private lateinit var adapter: AppListConfigAdapter
+    lateinit var adapter: AppListConfigAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +48,7 @@ class AppListConfigFragment : Fragment() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
                 id = MainActivity.CPOS_ID
-                setBackgroundColor(Color.parseColor("#90000000"))
+                //setBackgroundColor(Color.parseColor("#00000000"))
             }
             val wrapper = LinearLayout(context).apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -83,13 +83,14 @@ class AppListConfigFragment : Fragment() {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
-                        textSize = 18f
+                        textSize = 20f
                         setPadding(
                             dp2px(context, 2),
                             0,
                             dp2px(context, 2),
                             0)
                         text = emphasisFirstChar(app.label.substring(0, 1))
+                        setShadowLayer(2f, 2f, 2f, Color.BLACK)
                         setOnClickListener {
                             val toPos = appListData.indexOfFirst { i -> i.label[0] == this.text[0]}
                             rv.scrollToPosition(toPos)

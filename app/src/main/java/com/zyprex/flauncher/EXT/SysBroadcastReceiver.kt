@@ -66,6 +66,9 @@ class SysBroadcastReceiver: BroadcastReceiver() {
                     Intent.EXTRA_DOCK_STATE_HE_DESK -> verdict.actionStart("DOCK_HE_DESK")
                 }
             }
+
+            //Intent.ACTION_AIRPLANE_MODE_CHANGED
+
         }
     }
 }

@@ -11,11 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UTIL.DocStr
 import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UTIL.shadowTextView
 
 class PanelConfigFragment: Fragment() {
     override fun onCreateView(
@@ -46,15 +48,13 @@ class PanelConfigFragment: Fragment() {
         editor.setText(AppIndex.getPanelConfig(activity as MainActivity))
         editor.id = MainActivity.PANEL_CONF_ID
         layout.addView(editor)
-        val tv = decentTextView(context).apply {
+        val tv = shadowTextView(context).apply {
             typeface = Typeface.MONOSPACE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 0,
                 1f
             )
-            setPadding(0, 0, 0, 0)
-            gravity = Gravity.NO_GRAVITY
             setTextIsSelectable(true)
             val helpstr = DocStr.get()
             setLines(helpstr.count { char -> char == '\n' } + 1)

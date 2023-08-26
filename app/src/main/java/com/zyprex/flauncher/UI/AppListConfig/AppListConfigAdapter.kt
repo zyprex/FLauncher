@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
@@ -32,6 +33,7 @@ import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.charToColor
 import com.zyprex.flauncher.UTIL.copyToClipboard
 import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UTIL.dp2px
 import com.zyprex.flauncher.UTIL.emphasisFirstChar
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
@@ -44,7 +46,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = decentTextView(parent.context).apply {
+        val view = TextView(parent.context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -54,7 +56,17 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                 leftMargin = 0
                 rightMargin = MainActivity.ITEM_MARGIN
             }
-            setBackgroundColor(Color.parseColor("#40000000"))
+            textSize = 18f
+            setPadding(
+                dp2px(context, 10),
+                dp2px(context, 10),
+                dp2px(context, 10),
+                dp2px(context, 10),
+            )
+            setLines(1)
+            ellipsize = TextUtils.TruncateAt.END
+            setTextColor(Color.WHITE)
+            setBackgroundColor(Color.parseColor("#90000000"))
         }
         return ViewHolder(view)
     }
@@ -85,9 +97,10 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
         PopupMenu(context, view).apply {
             menu.apply {
                 add(0, 0, 0, "Copy Package Name")
-                add(0, 1, 1, "Add to AppList")
-                add(0, 2, 2, "Remove from AppList")
-                add(0, 3, 3, "App Info")
+                add(0, 1, 0, "Add to AppList")
+                add(0, 2, 0, "Remove from AppList")
+                add(0, 3, 0, "App Info")
+                add(0, 4, 0, "Update Apps Data")
             }
             setOnMenuItemClickListener {
                 when(it.itemId) {
@@ -105,6 +118,11 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                     }
                     3 -> {
                         launchAppDetail(context, app.pkgName)
+                        true
+                    }
+                    4 -> {
+                        appIndex.update()
+                        notifyDataSetChanged()
                         true
                     }
                     else -> false

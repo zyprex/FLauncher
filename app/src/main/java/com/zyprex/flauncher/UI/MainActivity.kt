@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         addAction(Intent.ACTION_PACKAGE_ADDED)
         addAction(Intent.ACTION_PACKAGE_REMOVED)
         addAction(Intent.ACTION_PACKAGE_REPLACED)
-        addAction(Intent.ACTION_LOCALE_CHANGED)
         addDataScheme("package")
     }
     private val appChgReceiver = AppChangeBroadcastReceiver()
@@ -118,8 +117,6 @@ class MainActivity : AppCompatActivity() {
             )
             gravity = Gravity.CENTER
             textSize = 20f
-            setTextColor(Color.WHITE)
-            setShadowLayer(8f, 0f, 0f, Color.BLACK)
         }
         prompt.setOnClickListener {
             when (prompt.text){
@@ -170,21 +167,6 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         replaceFragment(PanelFragment())
         //super.onBackPressed()
-    }
-
-    class MyReceiver:BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when(intent?.action) {
-                Intent.ACTION_PACKAGE_ADDED,
-                Intent.ACTION_PACKAGE_REMOVED,
-                Intent.ACTION_PACKAGE_REPLACED,
-                Intent.ACTION_LOCALE_CHANGED -> {
-                    if (context != null) {
-                        AppIndex(context).update()
-                    }
-                }
-            }
-        }
     }
 
     val reqPermissionLauncher =
