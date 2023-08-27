@@ -1,5 +1,6 @@
 package com.zyprex.flauncher.UI.AppList
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,18 +87,29 @@ class AppListFragment: Fragment() {
             return true
         }
 
-//        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-//            when (actionState) {
-//                ItemTouchHelper.ACTION_STATE_IDLE -> {
-//                    appIndex.dataFavUpdate()
-//                }
-//            }
-//            super.onSelectedChanged(viewHolder, actionState)
-//        }
+        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+            when (actionState) {
+                ItemTouchHelper.ACTION_STATE_IDLE -> {
+                    //appIndex.dataFavUpdate()
+                }
+                ItemTouchHelper.ACTION_STATE_SWIPE -> {
+                    viewHolder?.itemView?.setBackgroundColor(Color.parseColor("#9DC74545"))
+                }
+                ItemTouchHelper.ACTION_STATE_DRAG -> {
+                    viewHolder?.itemView?.setBackgroundColor(Color.parseColor("#9D609A47"))
+                }
+
+
+
+            }
+            super.onSelectedChanged(viewHolder, actionState)
+        }
 
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
             super.clearView(recyclerView, viewHolder)
+            viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT)
         }
+
     }
 
     private fun displayPrompt(str: String) {

@@ -8,6 +8,10 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -18,16 +22,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.UI.AppList.AppListFragment
 import com.zyprex.flauncher.UI.AppListConfig.AppListConfigFragment
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.EXT.AppChangeBroadcastReceiver
+import com.zyprex.flauncher.EXT.NetworkListener
 import com.zyprex.flauncher.EXT.SysBroadcastReceiver
 import com.zyprex.flauncher.UI.Panel.PanelFragment
+import com.zyprex.flauncher.UI.Panel.PanelVerdict
 import com.zyprex.flauncher.UI.Panel.PanelView
 import com.zyprex.flauncher.UI.PanelConfig.PanelConfigFragment
 import com.zyprex.flauncher.UTIL.decentTextView
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +51,11 @@ class MainActivity : AppCompatActivity() {
 
         const val ITEM_MARGIN = 5
         const val ICON_SIZE = 50
+
+        var appReadyTime = 0L
+        /* app start >3s */
+        fun appReady(): Boolean = (Date().time - MainActivity.appReadyTime > 3000)
+
     }
 
     var changedImageName: String = ""
@@ -60,24 +73,11 @@ class MainActivity : AppCompatActivity() {
         appListFragment.adapter.notifyItemChanged(changedImagePos)
     }
 
-    private val appChgfilter = IntentFilter().apply {
-        addAction(Intent.ACTION_PACKAGE_ADDED)
-        addAction(Intent.ACTION_PACKAGE_REMOVED)
-        addAction(Intent.ACTION_PACKAGE_REPLACED)
-        addDataScheme("package")
-    }
     private val appChgReceiver = AppChangeBroadcastReceiver()
-
-    private val sysFilter = IntentFilter().apply {
-        addAction(Intent.ACTION_POWER_CONNECTED)
-        addAction(Intent.ACTION_POWER_DISCONNECTED)
-        addAction(Intent.ACTION_BATTERY_LOW)
-        addAction(Intent.ACTION_BATTERY_OKAY)
-        addAction(Intent.ACTION_HEADSET_PLUG)
-        addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
-        addAction(Intent.ACTION_DOCK_EVENT)
-    }
     private val sysReceiver = SysBroadcastReceiver()
+
+    private lateinit var networkCallback : ConnectivityManager.NetworkCallback
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +85,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(initView())
         replaceFragment(PanelFragment())
 
-        registerReceiver(appChgReceiver, appChgfilter)
-        registerReceiver(sysReceiver, sysFilter)
+        /* register receivers */
+        registerReceiver(appChgReceiver, appChgReceiver.getFilter())
+        registerReceiver(sysReceiver, sysReceiver.getFilter())
+
+        appReadyTime = Date().time
+
+        registerNetworkChangeListener()
+
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -161,6 +167,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         unregisterReceiver(appChgReceiver)
         unregisterReceiver(sysReceiver)
+        unregiserNetworkChangeListener()
         super.onDestroy()
     }
 
@@ -180,4 +187,18 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         }
+
+    private fun registerNetworkChangeListener() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+        networkCallback = NetworkListener(this)
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    private fun unregiserNetworkChangeListener() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
 }

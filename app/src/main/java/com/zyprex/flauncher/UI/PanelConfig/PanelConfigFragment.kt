@@ -57,7 +57,6 @@ class PanelConfigFragment: Fragment() {
             )
             setTextIsSelectable(true)
             val helpstr = DocStr.get()
-            setLines(helpstr.count { char -> char == '\n' } + 1)
             text = helpstr
         }
         layout.addView(tv)

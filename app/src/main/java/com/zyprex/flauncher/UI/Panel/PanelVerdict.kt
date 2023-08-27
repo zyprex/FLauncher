@@ -89,4 +89,3 @@ class PanelVerdict(val context: Context) {
         }
     }
 }
-

@@ -17,6 +17,7 @@ import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.dp2px
 import com.zyprex.flauncher.UTIL.emphasisFirstChar
+import com.zyprex.flauncher.UTIL.shadowTextView
 import kotlin.math.abs
 
 class AppListConfigFragment : Fragment() {
@@ -78,19 +79,13 @@ class AppListConfigFragment : Fragment() {
 
             for (app in appListData) {
                 if (indx == 0 || indx > 0 && appListData[indx-1].label[0] != app.label[0]) {
-                    val btn = TextView(context).apply {
+                    val btn = shadowTextView(context).apply {
                         layoutParams = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
                         textSize = 20f
-                        setPadding(
-                            dp2px(context, 2),
-                            0,
-                            dp2px(context, 2),
-                            0)
                         text = emphasisFirstChar(app.label.substring(0, 1))
-                        setShadowLayer(2f, 2f, 2f, Color.BLACK)
                         setOnClickListener {
                             val toPos = appListData.indexOfFirst { i -> i.label[0] == this.text[0]}
                             rv.scrollToPosition(toPos)

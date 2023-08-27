@@ -148,11 +148,18 @@ fun emphasisFirstChar(text : String): SpannableString {
 fun dp2px(context: Context, dp: Int): Int =
     (dp * context.resources.displayMetrics.density).toInt()
 
+fun dp2px(context: Context, dp: Float): Float =
+    (dp * context.resources.displayMetrics.density)
+
 fun shadowTextView(context: Context): TextView =
     TextView(context).apply {
-        setLines(1)
-        ellipsize = TextUtils.TruncateAt.END
         textSize = 18f
+        setPadding(
+            dp2px(context, 2),
+            dp2px(context, 2),
+            dp2px(context, 2),
+            dp2px(context, 2),
+        )
         setShadowLayer(2f, 2f, 2f, Color.BLACK)
         setTextColor(Color.WHITE)
     }

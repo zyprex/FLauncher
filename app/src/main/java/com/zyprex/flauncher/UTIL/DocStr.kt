@@ -65,6 +65,8 @@ Event Type:
 ➢ HEADSET_[IN/OUT] (plug status for headset)
 ➢ BL_HEADSET_[IN/OUT] (plug status for bluetooth headset)
 ➢ DOCK_[CAR/DESK/LE_DESK/HE_DESK] (dock state)
+➢ AIRPLANE_MODE_[ON/OFF] (airplane mode)
+➢ NETWORK_[ON/OFF] (network status)
 
 Multiple Finger Touches Type:
 

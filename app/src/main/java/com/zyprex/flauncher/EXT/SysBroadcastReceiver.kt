@@ -6,10 +6,38 @@ import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkInfo
+import android.os.Build
 import android.widget.Toast
+import androidx.core.content.getSystemService
+import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UI.Panel.PanelVerdict
+import java.util.Date
 
 class SysBroadcastReceiver: BroadcastReceiver() {
+
+    /*
+    *  provide filters
+    * */
+    fun getFilter(): IntentFilter {
+        return IntentFilter().apply {
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
+            addAction(Intent.ACTION_BATTERY_LOW)
+            addAction(Intent.ACTION_BATTERY_OKAY)
+            addAction(Intent.ACTION_HEADSET_PLUG)
+            addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+            addAction(Intent.ACTION_DOCK_EVENT)
+            addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+            }
+        }
+    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null) return
@@ -67,8 +95,27 @@ class SysBroadcastReceiver: BroadcastReceiver() {
                 }
             }
 
-            //Intent.ACTION_AIRPLANE_MODE_CHANGED
+            Intent.ACTION_AIRPLANE_MODE_CHANGED -> {
+                if (intent.getBooleanExtra("state", false)) {
+                    verdict.actionStart("AIRPLANE_MODE_ON")
+                } else {
+                    verdict.actionStart("AIRPLANE_MODE_OFF")
+                }
+            }
+            ConnectivityManager.CONNECTIVITY_ACTION -> {
+                if (!MainActivity.appReady()) return
+
+                val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                if (connectivityManager.activeNetworkInfo?.isConnected == true) {
+                    //Toast.makeText(context, "network on", Toast.LENGTH_SHORT).show()
+                    verdict.actionStart("NETWORK_ON")
+                } else if (connectivityManager.activeNetworkInfo?.isConnected == false) {
+                    //Toast.makeText(context, "network off", Toast.LENGTH_SHORT).show()
+                    verdict.actionStart("NETWORK_OFF")
+                }
+            }
 
         }
+
     }
 }

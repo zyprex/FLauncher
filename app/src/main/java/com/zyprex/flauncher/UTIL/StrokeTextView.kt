@@ -31,9 +31,9 @@ class StrokeTextView: TextView {
     fun init() {
         borderText?.let {
             val tp1 = it.paint
-            tp1.strokeWidth = 5.5f
+            tp1.strokeWidth = dp2px(context, 3f)
             tp1.style = Paint.Style.STROKE
-            it.setTextColor(Color.parseColor("#62000000"))
+            it.setTextColor(Color.parseColor("#9D000000"))
         }
     }
 
