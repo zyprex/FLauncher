@@ -13,6 +13,7 @@ import android.net.NetworkInfo
 import android.os.Build
 import android.widget.Toast
 import androidx.core.content.getSystemService
+import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UI.Panel.PanelVerdict
 import java.util.Date
@@ -36,6 +37,7 @@ class SysBroadcastReceiver: BroadcastReceiver() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 addAction(ConnectivityManager.CONNECTIVITY_ACTION)
             }
+            addAction(Intent.ACTION_LOCALE_CHANGED)
         }
     }
 
@@ -114,8 +116,10 @@ class SysBroadcastReceiver: BroadcastReceiver() {
                     verdict.actionStart("NETWORK_OFF")
                 }
             }
-
+            Intent.ACTION_LOCALE_CHANGED -> {
+                //Toast.makeText(context, "locale changed !", Toast.LENGTH_SHORT).show()
+                AppIndex(context).dataUpdate()
+            }
         }
-
     }
 }

@@ -90,7 +90,7 @@ class AppIndex(val context: Context) {
     // app index methods
     fun data(): MutableList<AppArchive> = archives
 
-    fun update()  {
+    fun dataUpdate()  {
         archives.clear()
         archives.addAll(queryAppArchives())
     }
@@ -130,9 +130,6 @@ class AppIndex(val context: Context) {
             Toast.makeText(context, "no need remove!", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
 
     fun dataFavSwap(from: Int, to: Int) {
         Collections.swap(archivesFav, from, to)

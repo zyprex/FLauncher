@@ -2,6 +2,7 @@ package com.zyprex.flauncher.DT
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -20,14 +21,23 @@ class AppInfo(val context: Context) {
                 return BitmapDrawable(context.resources, bitmap)
             }
         } catch (e: FileNotFoundException) {
-            return pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
-                .loadIcon(pm)
+            try {
+                return pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
+                    .loadIcon(pm)
+            } catch (e: NameNotFoundException) {
+                return ShapeDrawable()
+            }
         }
     }
 
 
-    fun getLabel(pkgName: String): String =
-        pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
-            .loadLabel(pm).toString()
+    fun getLabel(pkgName: String): String {
+        try {
+         return pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
+                .loadLabel(pm).toString()
+        } catch (e: NameNotFoundException) {
+            return ""
+        }
+    }
 
 }
