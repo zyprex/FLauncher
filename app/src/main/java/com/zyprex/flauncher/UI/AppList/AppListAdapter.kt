@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery
 import android.content.pm.ShortcutInfo
-import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -125,16 +124,34 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
     private fun showAppListMenuWithShortcuts(context: Context, view: View, app: AppArchive, position: Int) {
         val shortcutQuery = LauncherApps.ShortcutQuery().apply {
             setQueryFlags(ShortcutQuery.FLAG_MATCH_MANIFEST or
-                    ShortcutQuery.FLAG_MATCH_PINNED or
-                    ShortcutQuery.FLAG_MATCH_DYNAMIC)
+                    ShortcutQuery.FLAG_MATCH_DYNAMIC or
+                    ShortcutQuery.FLAG_MATCH_PINNED)
             setPackage(app.pkgName)
         }
-        var shortcuts = mutableListOf<ShortcutInfo>()
+        val staticShortcutQuery = LauncherApps.ShortcutQuery().apply {
+            setQueryFlags(ShortcutQuery.FLAG_MATCH_MANIFEST)
+            setPackage(app.pkgName)
+        }
+        val dynamicShortcutQuery = LauncherApps.ShortcutQuery().apply {
+            setQueryFlags(ShortcutQuery.FLAG_MATCH_DYNAMIC)
+            setPackage(app.pkgName)
+        }
+        val pinShortcutQuery = LauncherApps.ShortcutQuery().apply {
+            setQueryFlags(ShortcutQuery.FLAG_MATCH_PINNED)
+            setPackage(app.pkgName)
+        }
+        var staticShortcuts = mutableListOf<ShortcutInfo>()
+        var dynamicShortcuts = mutableListOf<ShortcutInfo>()
+        var pinShortcuts = mutableListOf<ShortcutInfo>()
+        var allShortcuts = mutableListOf<ShortcutInfo>()
         try {
-            shortcuts = launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle()) as MutableList<ShortcutInfo>
+            staticShortcuts = launcherApps.getShortcuts(staticShortcutQuery, Process.myUserHandle()) as MutableList<ShortcutInfo>
+            dynamicShortcuts = launcherApps.getShortcuts(dynamicShortcutQuery, Process.myUserHandle()) as MutableList<ShortcutInfo>
+            pinShortcuts = launcherApps.getShortcuts(pinShortcutQuery, Process.myUserHandle()) as MutableList<ShortcutInfo>
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
+
         var idx = 900
         PopupMenu(context, view).apply {
             menu.add(0, 0, 0, "App Info")
@@ -143,11 +160,27 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                 add(1, 102, 0, "Reset Icon")
                 add(1, 103, 0, "Rename App")
             }
-            if (shortcuts.isNotEmpty()) {
-                for (shortcut in shortcuts) {
+            if (staticShortcuts.isNotEmpty()) {
+                for (shortcut in staticShortcuts) {
                     menu.add(2, idx, 0, shortcut.shortLabel)
+                    allShortcuts.add(shortcut)
                     idx++
                 }
+            }
+            if (dynamicShortcuts.isNotEmpty()) {
+                for (shortcut in dynamicShortcuts) {
+                    menu.add(2, idx, 0, shortcut.shortLabel)
+                    allShortcuts.add(shortcut)
+                    idx++
+                }
+            }
+            if (pinShortcuts.isNotEmpty()) {
+                for (shortcut in pinShortcuts) {
+                    menu.add(2, idx, 0, shortcut.shortLabel)
+                    allShortcuts.add(shortcut)
+                    idx++
+                }
+                menu.add(2, 2, 0, "[UNPIN ALL SHORTCUTS]")
             }
             setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -155,9 +188,11 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     101 -> setIconFromImg(context, app.pkgName, position)
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
+                    2 -> unpinAllShortcuts(app)
                     else -> {
-                        if (shortcuts.isNotEmpty() && it.itemId >= 900) {
-                            val shortcut = shortcuts[it.itemId - 900]
+                        if (allShortcuts.isNotEmpty()
+                            && it.itemId >= 900) {
+                            val shortcut = allShortcuts[it.itemId - 900]
                             launcherApps.startShortcut(
                                 app.pkgName,
                                 shortcut.id,
@@ -207,4 +242,9 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
             }.show()
         }
     }
+
+    private fun unpinAllShortcuts(app: AppArchive) {
+        launcherApps.pinShortcuts(app.pkgName, listOf(),Process.myUserHandle())
+    }
+
 }

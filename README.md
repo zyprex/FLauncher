@@ -1,6 +1,6 @@
 # FLauncher
 
-WARN: It's not a tranditional android launcher, read this doc from A to Z !
+CAUTION: It's an experimental android launcher, read this doc from A to Z !
 
 Features:
 - Do actions by fling, multiple touches or hardware connect event actions.
@@ -12,6 +12,15 @@ Features:
 - Use any png image as icon (AppList interface only)
 - Rename app label (AppList interface only)
 - Work on Android 5.0 above.
+
+Defects:
+- No plan to support widgets.
+
+The shortcuts are not installed as tranditional way:
+
+1. On Android Version Lower than 7.1, it's only add to PanelConfig as String.
+2. On Android Verision 7.1 or above, it's also add shortcut on AppList context menu as pinned shortcuts.
+
 
 # Prompt Bar
 
@@ -89,6 +98,7 @@ Explain some use cases:
 
 Any action are 1s delay to launch, but you can click prompt bar to run it instantly.
 
+
 # App List
 
 Sort by long press and drag, delete by swipe left or right.
@@ -100,13 +110,22 @@ Click app icon to show the context menu
 
 Long press show the context menu. Swipe left or right add app to AppList.
 
-# Thanks
+# Credits
 
 The ideas I build this app are heavily inspired by those launchers:
 
-- [kiss launcher](https://github.com/Neamar/KISS): Search focused app launcher.
-- [Pie launcher](https://github.com/markusfisch/PieLauncher): Launcher with a dynamic pie menu.
-- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): One-hand optimized launcher (Not FOSS).
+- [kiss launcher](https://github.com/Neamar/KISS): 
+  - Pros: Search focused app launcher.
+  - Cons: Simple UI but complicated configurations.
+- [Pie launcher](https://github.com/markusfisch/PieLauncher): 
+  - Pros: Launcher with a dynamic pie menu.
+  - Cons: Lack of configurations.
+- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): 
+  - Pros: One-hand optimized launcher.
+  - Cons: Not FOSS, app list too crowd.
+- [Discreet Launcher](https://github.com/falzonv/discreet-launcher):
+  - Pros: Access favor apps from notifications, clean home.
+  - Cons: Grid app layout everywhere.
 
 And many other's work lifted me up, help me out:
 

@@ -3,8 +3,10 @@ package com.zyprex.flauncher.UTIL
 import android.Manifest
 import android.app.SearchManager
 import android.app.Service
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.hardware.camera2.CameraAccessException
@@ -14,6 +16,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -23,6 +26,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.zyprex.flauncher.UI.MainActivity
+import java.lang.IllegalStateException
 import java.lang.reflect.Method
 import java.net.URLEncoder
 import java.util.Date
@@ -202,6 +206,31 @@ class Starter(val context: Context) {
             "silent" -> AudioManager.RINGER_MODE_SILENT
             "vibrate" -> AudioManager.RINGER_MODE_VIBRATE
             else -> AudioManager.RINGER_MODE_NORMAL
+        }
+    }
+
+    fun shortcutsOpen(scIntent: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            safeStartActiviy(context, Intent.parseUri(scIntent, 0))
+        } else {
+            val scList = scIntent.split("/")
+            val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+            try {
+                launcherApps.startShortcut(scList[0], scList[1], null, null, Process.myUserHandle())
+            } catch (e: SecurityException) {
+                reportError( "SecurityException")
+            } catch (e: IllegalStateException) {
+                reportError("IllegalStateException")
+            } catch (e: ActivityNotFoundException) {
+                reportError("ActivityNotFoundException")
+            }
+        }
+    }
+
+    private fun reportError(msg: String) {
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            Toast.makeText(context, "Error: $msg", Toast.LENGTH_SHORT).show()
         }
     }
 }

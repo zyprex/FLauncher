@@ -29,6 +29,7 @@ import com.zyprex.flauncher.UI.AppListConfig.AppListConfigFragment
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.EXT.AppChangeBroadcastReceiver
 import com.zyprex.flauncher.EXT.NetworkListener
+import com.zyprex.flauncher.EXT.ShortcutBroadcastReceiver
 import com.zyprex.flauncher.EXT.SysBroadcastReceiver
 import com.zyprex.flauncher.UI.Panel.PanelFragment
 import com.zyprex.flauncher.UI.Panel.PanelVerdict
@@ -76,6 +77,12 @@ class MainActivity : AppCompatActivity() {
     private val appChgReceiver = AppChangeBroadcastReceiver()
     private val sysReceiver = SysBroadcastReceiver()
 
+    private val shortcutBroadcastReceiver = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        ShortcutBroadcastReceiver()
+    } else {
+        null
+    }
+
     private lateinit var networkCallback : ConnectivityManager.NetworkCallback
 
 
@@ -88,6 +95,9 @@ class MainActivity : AppCompatActivity() {
         /* register receivers */
         registerReceiver(appChgReceiver, appChgReceiver.getFilter())
         registerReceiver(sysReceiver, sysReceiver.getFilter())
+        if (shortcutBroadcastReceiver != null) {
+            registerReceiver(shortcutBroadcastReceiver, shortcutBroadcastReceiver.getFilter())
+        }
 
         appReadyTime = Date().time
 
@@ -167,6 +177,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         unregisterReceiver(appChgReceiver)
         unregisterReceiver(sysReceiver)
+        if (shortcutBroadcastReceiver != null) {
+            unregisterReceiver(shortcutBroadcastReceiver)
+        }
         unregiserNetworkChangeListener()
         super.onDestroy()
     }

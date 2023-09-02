@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.DT.AppIndex
@@ -35,19 +37,35 @@ class PanelConfigFragment: Fragment() {
             )
             orientation = LinearLayout.VERTICAL
         }
-        val editor = EditText(context).apply {
+        val hScrolllView = HorizontalScrollView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 0,
                 1f
             )
             setBackgroundColor(Color.parseColor("#90000000"))
+        }
+        val vScrollView = ScrollView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        }
+        val editor = EditText(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+            minimumHeight = 50
+            minimumWidth = context.resources.displayMetrics.widthPixels
             inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             isSingleLine = false
         }
         editor.setText(AppIndex.getPanelConfig(activity as MainActivity))
         editor.id = MainActivity.PANEL_CONF_ID
-        layout.addView(editor)
+        vScrollView.addView(editor)
+        hScrolllView.addView(vScrollView)
+        layout.addView(hScrolllView)
         val tv = shadowTextView(context).apply {
             typeface = Typeface.MONOSPACE
             layoutParams = LinearLayout.LayoutParams(
