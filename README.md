@@ -126,7 +126,7 @@ Long press show the context menu. Swipe left or right add app to AppList.
 # Download This App
 
 Download released apk:
-- [FLauncher](/tree/main/app/release)
+- [FLauncher](app/release)
 
 # Credits
 
