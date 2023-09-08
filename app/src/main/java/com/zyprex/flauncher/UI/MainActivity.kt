@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
+import com.zyprex.flauncher.DT.ActionInfo
 import com.zyprex.flauncher.UI.AppList.AppListFragment
 import com.zyprex.flauncher.UI.AppListConfig.AppListConfigFragment
 import com.zyprex.flauncher.DT.AppIndex
@@ -102,7 +103,6 @@ class MainActivity : AppCompatActivity() {
         appReadyTime = Date().time
 
         registerNetworkChangeListener()
-
     }
 
     private fun replaceFragment(fragment: Fragment) {

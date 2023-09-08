@@ -13,16 +13,19 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.DT.AppArchive
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.DT.AppInfo
 import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UI.Panel.PanelVerdict
 import com.zyprex.flauncher.UTIL.decentTextView
 import com.zyprex.flauncher.UTIL.dp2px
 import com.zyprex.flauncher.UTIL.launchApp
@@ -39,12 +42,16 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
 
     lateinit var launcherApps: LauncherApps
 
+    lateinit var panelVerdict: PanelVerdict
+
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
 
         launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+
+        panelVerdict = PanelVerdict(context)
 
         val layout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -92,7 +99,9 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
         }
         tv.text = apps[position].label
         holder.itemView.setOnClickListener {
-            launchApp(context, apps[position].pkgName)
+            if (panelVerdict.runNumStrOpCode(apps[position].pkgName) == false) {
+                launchApp(context, apps[position].pkgName)
+            }
         }
     }
     override fun getItemCount(): Int = apps.size
@@ -108,6 +117,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                 add(1, 101, 0, "Set Image Icon")
                 add(1, 102, 0, "Reset Icon")
                 add(1, 103, 0, "Rename App")
+                add(1, 104, 0, "Edit App List")
             }
             setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -115,6 +125,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     101 -> setIconFromImg(context, app.pkgName, position)
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
+                    104 -> editAppList(context)
                 }
                 true
             }
@@ -122,12 +133,6 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
     }
 
     private fun showAppListMenuWithShortcuts(context: Context, view: View, app: AppArchive, position: Int) {
-        val shortcutQuery = LauncherApps.ShortcutQuery().apply {
-            setQueryFlags(ShortcutQuery.FLAG_MATCH_MANIFEST or
-                    ShortcutQuery.FLAG_MATCH_DYNAMIC or
-                    ShortcutQuery.FLAG_MATCH_PINNED)
-            setPackage(app.pkgName)
-        }
         val staticShortcutQuery = LauncherApps.ShortcutQuery().apply {
             setQueryFlags(ShortcutQuery.FLAG_MATCH_MANIFEST)
             setPackage(app.pkgName)
@@ -159,6 +164,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                 add(1, 101, 0, "Set Image Icon")
                 add(1, 102, 0, "Reset Icon")
                 add(1, 103, 0, "Rename App")
+                add(1, 104, 0, "Edit App List")
             }
             if (staticShortcuts.isNotEmpty()) {
                 for (shortcut in staticShortcuts) {
@@ -188,6 +194,7 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     101 -> setIconFromImg(context, app.pkgName, position)
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
+                    104 -> editAppList(context)
                     2 -> unpinAllShortcuts(app)
                     else -> {
                         if (allShortcuts.isNotEmpty()
@@ -210,6 +217,9 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
 
     private fun setIconFromImg(context: Context, pkgName: String, position: Int) {
         val mainActivity = context as MainActivity
+        if ("$pkgName".contains("/")) {
+            return
+        }
         mainActivity.changedImageName = "$pkgName.png"
         mainActivity.changedImagePos = position
         mainActivity.getImgFile.launch("image/png")
@@ -244,7 +254,36 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
     }
 
     private fun unpinAllShortcuts(app: AppArchive) {
-        launcherApps.pinShortcuts(app.pkgName, listOf(),Process.myUserHandle())
+        launcherApps.pinShortcuts(app.pkgName, listOf(), Process.myUserHandle())
     }
 
+    private fun editAppList(context: Context) {
+        val input = EditText(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+            setText(AppIndex.readAppFav(context))
+            maxLines = 10
+        }
+        val hScrolllView = HorizontalScrollView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
+        }
+        hScrolllView.addView(input)
+        AlertDialog.Builder(context).apply {
+            setTitle("Edit App List")
+            setMessage("Tip: format `{num_str}#{label}` run as opcode!")
+            setView(hScrolllView)
+            setNegativeButton("CANCEL"){ dialog,_ ->
+                dialog.dismiss()
+            }
+            setPositiveButton("OK"){ _,_ ->
+                val result = input.text.toString()
+                AppIndex.saveAppFav(context, result)
+            }
+        }.show()
+    }
 }

@@ -17,6 +17,7 @@ import com.zyprex.flauncher.UTIL.dp2px
 import com.zyprex.flauncher.UTIL.emphasisFirstChar
 import com.zyprex.flauncher.UTIL.launchApp
 import com.zyprex.flauncher.UTIL.launchAppDetail
+import com.zyprex.flauncher.UTIL.openAppInMarket
 
 class AppListConfigAdapter(val apps: MutableList<AppArchive>):
     RecyclerView.Adapter<AppListConfigAdapter.ViewHolder>() {
@@ -80,6 +81,7 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                 add(0, 2, 0, "Remove from AppList")
                 add(0, 3, 0, "App Info")
                 add(0, 4, 0, "Update Apps Data")
+                add(0, 5, 0, "Open App Market")
             }
             setOnMenuItemClickListener {
                 when(it.itemId) {
@@ -102,6 +104,10 @@ class AppListConfigAdapter(val apps: MutableList<AppArchive>):
                     4 -> {
                         appIndex.dataUpdate()
                         notifyDataSetChanged()
+                        true
+                    }
+                    5 -> {
+                        openAppInMarket(context, app.pkgName)
                         true
                     }
                     else -> false

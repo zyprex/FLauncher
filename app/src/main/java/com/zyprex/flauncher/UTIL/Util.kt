@@ -113,6 +113,11 @@ fun launchAppDetail(context: Context, pkgName: String) {
     safeStartActiviy(context, intent)
 }
 
+fun openAppInMarket(context: Context, pkgName: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${pkgName}"))
+    safeStartActiviy(context, intent)
+}
+
 
 /*
 *

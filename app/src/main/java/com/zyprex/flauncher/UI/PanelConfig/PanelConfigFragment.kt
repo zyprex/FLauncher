@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.InputType
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,11 @@ import android.widget.EditText
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UTIL.DocStr
 import com.zyprex.flauncher.UI.MainActivity
-import com.zyprex.flauncher.UTIL.decentTextView
+import com.zyprex.flauncher.UI.Panel.PanelVerdict
 import com.zyprex.flauncher.UTIL.shadowTextView
 
 class PanelConfigFragment: Fragment() {
@@ -61,7 +59,7 @@ class PanelConfigFragment: Fragment() {
             inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             isSingleLine = false
         }
-        editor.setText(AppIndex.getPanelConfig(activity as MainActivity))
+        editor.setText(AppIndex.readPanelConfig(activity as MainActivity))
         editor.id = MainActivity.PANEL_CONF_ID
         vScrollView.addView(editor)
         hScrolllView.addView(vScrollView)
@@ -84,7 +82,8 @@ class PanelConfigFragment: Fragment() {
     override fun onDestroyView() {
         view?.findViewById<EditText>(MainActivity.PANEL_CONF_ID)?.apply {
             val text = this.text.toString()
-            AppIndex.setPanelConfig(this.context, text)
+            AppIndex.savePanelConfig(this.context, text)
+            PanelVerdict(this.context).updateActionInfoList()
         }
         super.onDestroyView()
     }

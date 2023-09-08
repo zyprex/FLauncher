@@ -3,7 +3,7 @@ package com.zyprex.flauncher.UTIL
 import java.lang.StringBuilder
 
 object DocStr {
-    fun get(): String = """ACTIONS RECIPE DENOTATIONS:
+    fun get(): String = """OPCODE RECIPE DENOTATIONS:
 
 ➢ app#*#<package_name>
 ➢ appinfo#*#<package_name>
@@ -52,11 +52,11 @@ object DocStr {
    ..#back
    ..#home
 
-ACTION CODE DENOTATIONS:
+OPCODE DENOTATIONS:
 
 Gestures Type:
 
-➢ * (numbered action code, e.g. your gesture sequences)
+➢ * (numbered opcode, e.g. your gesture sequences)
 
 Event Type: 
 

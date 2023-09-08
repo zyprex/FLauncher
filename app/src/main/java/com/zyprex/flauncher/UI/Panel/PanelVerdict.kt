@@ -1,8 +1,8 @@
 package com.zyprex.flauncher.UI.Panel
 
-import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
+import com.zyprex.flauncher.DT.ActionInfo
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.DT.AppRecents
 import com.zyprex.flauncher.EXT.MyAccessibilityService
@@ -36,27 +36,58 @@ class PanelVerdict(val context: Context) {
             "need web link: http://....",
             "need search engine format: http://search/q?=%s",
         )
+        val actionInfoList = mutableListOf<ActionInfo>()
     }
 
-    private var cfg: String = readFile(context, AppIndex.panelFileName)
+    init {
+        updateActionInfoList()
+    }
+
     private val starter = Starter(context)
 
-    fun actionStart(actionCode: String): Boolean {
-        //Log.d("PanelVerdict", actionCode)
-        var flag = false
-        val results = Regex("^.+#${actionCode}#.*\n", RegexOption.MULTILINE)
+    fun updateActionInfoList() {
+        actionInfoList.clear()
+        actionInfoList.addAll(parseActionInfoList())
+    }
+
+    fun parseActionInfoList(): MutableList<ActionInfo> {
+        var cfg: String = readFile(context, AppIndex.panelFileName)
+        val actionInfos = mutableListOf<ActionInfo>()
+        val results = Regex("^.+#.+#.*\n", RegexOption.MULTILINE)
             .findAll(cfg)
         results.forEach {
-            typeRun(it.value.replace("\n", ""), "#${actionCode}#".toRegex())
-            flag = true
+            val line = it.value.replace("\n", "")
+            val sects = line.split("#".toRegex(), 3)
+            val actionInfo = ActionInfo(
+                sects[0],
+                sects[1],
+                sects[2],
+            )
+            actionInfos.add(actionInfo)
+        }
+        return actionInfos
+    }
+
+    fun actionStart(opCode: String): Boolean {
+        var flag = false
+        for (info in actionInfoList) {
+            if (info.opCode == opCode) {
+                run(info.type, info.cmd)
+                flag = true
+            }
         }
         return flag
     }
 
-    private fun typeRun(cfgLine: String, delim: Regex) {
-        val arr = cfgLine.split(delim, 2)
-        val type = arr[0]
-        val param = arr[1]
+    fun runNumStrOpCode(opCode: String): Boolean {
+        if (Regex("\\d+").matches(opCode)) {
+            actionStart(opCode)
+            return true
+        }
+        return false
+    }
+
+    private fun run(type: String, param: String) {
         when(type) {
             "app" -> launchApp(context, param)
             "appinfo" -> launchAppDetail(context, param)
@@ -86,9 +117,7 @@ class PanelVerdict(val context: Context) {
                 }
                 MyAccessibilityService.useAction(param)
             }
-            "shortcut" -> {
-                starter.shortcutsOpen(param)
-            }
+            "shortcut" -> starter.shortcutsOpen(param)
         }
     }
 }

@@ -1,9 +1,9 @@
 # FLauncher
 
-CAUTION: It's an experimental android launcher, read this doc from A to Z !
+CAUTION: It's an experimental android launcher, read this doc from A to Z before start!
 
 Features:
-- Do actions by fling, multiple touches or hardware connect event actions.
+- Do actions by tap, press, fling, multiple touches or system event changed.
 - Do actions without looking at the screen.
 - A decent app list.
 - Pure text configuration.
@@ -15,12 +15,12 @@ Features:
 
 Defects:
 - No plan to support widgets.
+- No plan to support app icon pack.
 
 The shortcuts are not installed as tranditional way:
 
-1. On Android Version Lower than 7.1, it's only add to PanelConfig as String.
-2. On Android Verision 7.1 or above, it's also add shortcut on AppList context menu as pinned shortcuts.
-
+1. On Android Version Lower than 8.0, it's only add to PanelConfig as String.
+2. On Android Verision 8.0 or above, it's also add shortcut on AppList context menu as pinned shortcuts.
 
 # Prompt Bar
 
@@ -106,21 +106,39 @@ Sort by long press and drag, delete by swipe left or right.
 Click app icon to show the context menu
 (on Android 7.1 or above will list available shortcuts).
 
+**Click top item easily**:
+
+Use menu option `Edit App List`, add lines at the beginning of texts.
+
+```
+/#
+/#
+/#
+```
+
+This lines cannot be executed so there're suitable as empty placeholder.
+
+
 # App List Configuration
 
 Long press show the context menu. Swipe left or right add app to AppList.
+
+# Download This App
+
+Download released apk:
+- [FLauncher](/blob/main/app/release/app-release.apk)
 
 # Credits
 
 The ideas I build this app are heavily inspired by those launchers:
 
-- [kiss launcher](https://github.com/Neamar/KISS): 
+- [kiss launcher](https://github.com/Neamar/KISS):
   - Pros: Search focused app launcher.
   - Cons: Simple UI but complicated configurations.
-- [Pie launcher](https://github.com/markusfisch/PieLauncher): 
+- [Pie launcher](https://github.com/markusfisch/PieLauncher):
   - Pros: Launcher with a dynamic pie menu.
   - Cons: Lack of configurations.
-- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues): 
+- [Niagara Launcher](https://github.com/8bitPit/Niagara-Issues):
   - Pros: One-hand optimized launcher.
   - Cons: Not FOSS, app list too crowd.
 - [Discreet Launcher](https://github.com/falzonv/discreet-launcher):

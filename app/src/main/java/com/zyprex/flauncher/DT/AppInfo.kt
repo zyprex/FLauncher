@@ -22,11 +22,12 @@ class AppInfo(val context: Context) {
             }
         } catch (e: FileNotFoundException) {
             try {
-                return pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)
-                    .loadIcon(pm)
+                return pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA).loadIcon(pm)
             } catch (e: NameNotFoundException) {
                 return ShapeDrawable()
             }
+        } catch (e: IllegalArgumentException) {
+            return ShapeDrawable()
         }
     }
 

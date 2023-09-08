@@ -5,7 +5,6 @@ import android.content.pm.LauncherApps
 import android.content.pm.ShortcutInfo
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.zyprex.flauncher.DT.AppIndex
@@ -28,8 +27,15 @@ class ShortcutConfirmActivity: AppCompatActivity() {
         val pkgName = scInfo.`package`
         val id = scInfo.id
 
-        val str = AppIndex.getPanelConfig(this)
-        AppIndex.setPanelConfig(this, "$str\n#-*-*- shortcut name: $label -*-*-\nshortcut##$pkgName/$id\n")
+        /* // get shortcut icon
+        val launcherApps = getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        if (launcherApps.hasShortcutHostPermission()) {
+            launcherApps.getShortcutIconDrawable(scInfo, 0)
+        }
+         */
+
+        val str = AppIndex.readPanelConfig(this)
+        AppIndex.savePanelConfig(this, "$str\n#-*-*- shortcut name: $label -*-*-\nshortcut##$pkgName/$id\n")
         Toast.makeText(this, "Shortcut '$label' added in panel config, please edit it manually!", Toast.LENGTH_SHORT).show()
 
         val homeIntent = Intent()

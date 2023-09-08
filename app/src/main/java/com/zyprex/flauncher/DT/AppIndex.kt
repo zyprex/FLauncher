@@ -1,7 +1,8 @@
 package com.zyprex.flauncher.DT
 
 import android.content.Context
-import android.content.Intent
+import android.content.pm.LauncherApps
+import android.os.Process
 import android.widget.Toast
 import com.zyprex.flauncher.UTIL.readFile
 import com.zyprex.flauncher.UTIL.writeFile
@@ -17,10 +18,17 @@ class AppIndex(val context: Context) {
         val archives = mutableListOf<AppArchive>()
         val archivesFav = mutableListOf<AppArchive>()
 
-        fun getPanelConfig(context: Context): String {
+        fun readAppFav(context: Context): String {
+            return readFile(context, appFavorFileName)
+        }
+        fun saveAppFav(context: Context, str: String) {
+            writeFile(context, appFavorFileName, str)
+        }
+
+        fun readPanelConfig(context: Context): String {
             return readFile(context, panelFileName)
         }
-        fun setPanelConfig(context: Context, str: String) {
+        fun savePanelConfig(context: Context, str: String) {
             writeFile(context, panelFileName, str)
         }
     }
@@ -50,15 +58,26 @@ class AppIndex(val context: Context) {
 
     private fun queryAppArchives(): MutableList<AppArchive> {
         val archives = mutableListOf<AppArchive>()
+
+        /* // Used for Android Version Under LOLLIPOP
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         val activities = pm.queryIntentActivities(intent, 0)
         for (info in activities) {
             archives.add(AppArchive(info.loadLabel(pm).toString(), info.activityInfo.packageName))
         }
-        archives.sortBy {
-            it.label
+         */
+
+        val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        val appInfoList = launcherApps.getActivityList(null, Process.myUserHandle())
+        for (appInfo in appInfoList) {
+            val pkgName = appInfo.applicationInfo.packageName
+            val label = appInfo.label.toString()
+            archives.add(AppArchive(label, pkgName))
         }
+
+        archives.sortBy(AppArchive::label)
+
         // save to file
         val sb = StringBuilder()
         for (info in archives) {
