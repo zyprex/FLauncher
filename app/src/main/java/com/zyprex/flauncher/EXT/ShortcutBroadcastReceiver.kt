@@ -30,6 +30,6 @@ class ShortcutBroadcastReceiver: BroadcastReceiver() {
 
         val str = AppIndex.readPanelConfig(context)
         AppIndex.savePanelConfig(context, "$str\n#-*-*- shortcut name: $label -*-*-\nshortcut##${scIntent}\n")
-        Toast.makeText(context, "Shortcut '$label' added in panel config, please edit it manually!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Shortcut '$label' added in panel config, please edit it manually!", Toast.LENGTH_LONG).show()
     }
 }

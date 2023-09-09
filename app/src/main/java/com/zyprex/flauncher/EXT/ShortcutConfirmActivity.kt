@@ -36,7 +36,7 @@ class ShortcutConfirmActivity: AppCompatActivity() {
 
         val str = AppIndex.readPanelConfig(this)
         AppIndex.savePanelConfig(this, "$str\n#-*-*- shortcut name: $label -*-*-\nshortcut##$pkgName/$id\n")
-        Toast.makeText(this, "Shortcut '$label' added in panel config, please edit it manually!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Shortcut '$label' added in panel config, please edit it manually!", Toast.LENGTH_LONG).show()
 
         val homeIntent = Intent()
         homeIntent.setClass(this, MainActivity::class.java)

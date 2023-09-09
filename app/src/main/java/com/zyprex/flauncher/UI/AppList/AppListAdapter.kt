@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.zyprex.flauncher.DT.AppArchive
@@ -186,7 +185,13 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     allShortcuts.add(shortcut)
                     idx++
                 }
-                menu.add(2, 2, 0, "[UNPIN ALL SHORTCUTS]")
+                menu.addSubMenu(3, 2, 0, "Unpin Shortcut").apply {
+                    var index = 1000
+                    for (shortcut in pinShortcuts) {
+                        this.add(3, index, 0, shortcut.shortLabel)
+                        index++
+                    }
+                }
             }
             setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -195,19 +200,18 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
                     102 -> deleteImageIcon(context, app.pkgName, position)
                     103 -> renameApp(context, app, position)
                     104 -> editAppList(context)
-                    2 -> unpinAllShortcuts(app)
                     else -> {
-                        if (allShortcuts.isNotEmpty()
-                            && it.itemId >= 900) {
+                        if (allShortcuts.isNotEmpty() && it.itemId >= 900 && it.itemId < 1000) {
                             val shortcut = allShortcuts[it.itemId - 900]
-                            launcherApps.startShortcut(
-                                app.pkgName,
-                                shortcut.id,
-                                null,
-                                null,
-                                Process.myUserHandle()
-                            )
+                            launcherApps.startShortcut(app.pkgName, shortcut.id, null, null, Process.myUserHandle())
                         }
+
+                        if (pinShortcuts.isNotEmpty() && it.itemId >= 1000) {
+                            pinShortcuts.removeAt(it.itemId - 1000)
+                            val idList = pinShortcuts.map { i -> i.id }
+                            unpinShortcut(app.pkgName, idList)
+                        }
+
                     }
                 }
                 true
@@ -253,8 +257,8 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
         }
     }
 
-    private fun unpinAllShortcuts(app: AppArchive) {
-        launcherApps.pinShortcuts(app.pkgName, listOf(), Process.myUserHandle())
+    private fun unpinShortcut(pkgName: String, idList: List<String>) {
+        launcherApps.pinShortcuts(pkgName, idList, Process.myUserHandle())
     }
 
     private fun editAppList(context: Context) {
@@ -283,6 +287,16 @@ class AppListAdapter(val apps: MutableList<AppArchive>):
             setPositiveButton("OK"){ _,_ ->
                 val result = input.text.toString()
                 AppIndex.saveAppFav(context, result)
+                AppIndex.archivesFav.clear()
+                if (result != "") {
+                    for (line in result.split("\n")) {
+                        if (line.contains("#")) {
+                            val list = line.split("#")
+                            AppIndex.archivesFav.add(AppArchive(list[1], list[0]))
+                        }
+                    }
+                }
+                notifyDataSetChanged()
             }
         }.show()
     }
