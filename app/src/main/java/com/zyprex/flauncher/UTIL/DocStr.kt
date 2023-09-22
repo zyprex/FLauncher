@@ -18,6 +18,7 @@ object DocStr {
    ..#accessibility
    ..#apn
    ..#appmgr
+   ..#battery
    ..#bluetooth
    ..#data
    ..#data_usage
@@ -51,12 +52,15 @@ object DocStr {
    ..#recents
    ..#back
    ..#home
+➢ menu#*#**,<name1>;**,<name2>;...
 
 OPCODE DENOTATIONS:
 
 Gestures Type:
 
 ➢ * (numbered opcode, e.g. your gesture sequences)
+
+➢ ** (any opcode, e.g. your defined gesture sequences)
 
 Event Type: 
 

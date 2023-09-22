@@ -94,10 +94,19 @@ Explain some use cases:
 - switch to silent mode by put two finger on screen is `cmd#D#ringer_mode_silent`
 - open music when headset connected is `app#HEADSET_IN#com.android.mediacenter`
 - call phone number 1234567 by some swipes is `call#123#1234567`
-  (call can direct call phone number speed your money while dial not.)
+  (call can call phone number directly while dial not.)
 
 Any action are 1s delay to launch, but you can click prompt bar to run it instantly.
 
+The `menu` type let you create a group launchable items show in a dialog list,
+for example:
+
+```
+app#xyz#com.android.settings
+app#uvw#com.android.mediacenter
+menu#00#xyz,Settings;uvw,Media Center;
+
+```
 
 # App List
 
@@ -116,8 +125,19 @@ Use menu option `Edit App List`, add lines at the beginning of texts.
 /#
 ```
 
-This lines cannot be executed so there're suitable as empty placeholder.
+Those lines cannot be executed so it's suitable as empty placeholder.
 
+**Use opcode as app list item**:
+
+Use menu option `Edit App List`, add lines at the beginning of texts.
+
+```
+00#Do zero zero
+```
+
+When you click this item, the effects are equal to Long press twice on the panel.
+
+Only the number opcodes will take effects.
 
 # App List Configuration
 

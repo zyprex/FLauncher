@@ -1,7 +1,6 @@
 package com.zyprex.flauncher.UTIL
 
 import android.Manifest
-import android.app.SearchManager
 import android.app.Service
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -17,19 +16,16 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
-import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Log
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.zyprex.flauncher.UI.MainActivity
+import com.zyprex.flauncher.UI.Panel.PanelVerdict
 import java.lang.IllegalStateException
 import java.lang.reflect.Method
 import java.net.URLEncoder
-import java.util.Date
 
 class Starter(val context: Context) {
     fun dialPhoneNum(phoneNum: String) {
@@ -52,8 +48,6 @@ class Starter(val context: Context) {
             }
         }
     }
-
-
 
     fun sendSMS(number: String) {
         val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${number}"))
@@ -104,6 +98,7 @@ class Starter(val context: Context) {
             "accessibility" -> Settings.ACTION_ACCESSIBILITY_SETTINGS
             "apn" -> Settings.ACTION_APN_SETTINGS
             "appmgr" -> Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS
+            "battery" -> Intent.ACTION_POWER_USAGE_SUMMARY
             "bluetooth" -> Settings.ACTION_BLUETOOTH_SETTINGS
             "data" -> Settings.ACTION_DATA_ROAMING_SETTINGS
             "data_usage" -> Settings.ACTION_DATA_USAGE_SETTINGS
@@ -231,6 +226,29 @@ class Starter(val context: Context) {
         val handler = Handler(Looper.getMainLooper())
         handler.post {
             Toast.makeText(context, "Error: $msg", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun openMenu(param: String) {
+        val opArr = mutableListOf<String>()
+        val nameArr = mutableListOf<String>()
+        val mlist = param.split(";")
+        for (m in mlist) {
+            val mitem = m.split(",".toRegex(), 2)
+            if (mitem.count() == 2) {
+                opArr.add(mitem[0])
+                nameArr.add(mitem[1])
+            }
+        }
+        if (nameArr.isEmpty()) return
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            AlertDialog.Builder(context).apply {
+                setTitle("Menu Group")
+                setItems(nameArr.toTypedArray()) { _, i ->
+                    PanelVerdict(context).actionStart(opArr[i])
+                }
+            }.show()
         }
     }
 }

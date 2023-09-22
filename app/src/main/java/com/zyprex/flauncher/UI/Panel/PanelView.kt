@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.zyprex.flauncher.DT.ActionInfo
 import com.zyprex.flauncher.DT.AppIndex
 import com.zyprex.flauncher.UI.MainActivity
 import com.zyprex.flauncher.UTIL.appendLineToFile
@@ -184,6 +185,7 @@ class PanelView: TextView {
                     setMessage(PanelVerdict.typeInfo[i])
                     setView(input)
                     setPositiveButton("OK") { _, _ ->
+                        PanelVerdict.actionInfoList.add(ActionInfo(PanelVerdict.type[i], actionCode, input.text.toString()))
                         appendPanelConfig(PanelVerdict.type[i], actionCode, input.text.toString())
                     }
                     setNegativeButton("CANCEL") { dialog, _ -> dialog.dismiss() }

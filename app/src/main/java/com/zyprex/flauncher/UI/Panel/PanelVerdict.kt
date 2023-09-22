@@ -118,6 +118,7 @@ class PanelVerdict(val context: Context) {
                 MyAccessibilityService.useAction(param)
             }
             "shortcut" -> starter.shortcutsOpen(param)
+            "menu" -> starter.openMenu(param)
         }
     }
 }
